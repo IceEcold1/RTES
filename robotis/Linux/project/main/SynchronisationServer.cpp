@@ -20,9 +20,9 @@ string*::SynchronisationServer::read_ltsa_exports()
 		{
 			ifstream ltsa_export;
 
-			sprintf((char*)path.c_str(), "LTSA/%s", file->d_name);
-			ltsa_export.open(path.c_str());
-			while(getline(ltsa_export, data))
+			sprintf((char*)path.c_str(), "LTSA/%s", file->d_name); // String-format the path of the LTSA export file
+			ltsa_export.open(path.c_str()); // Open the file using the generated path
+			while(getline(ltsa_export, data)) // 
 			{
 				printf("%s\n", data.c_str());
 			}
