@@ -6,14 +6,16 @@
 #include <dirent.h>
 #include <stdio.h>
 #include <fstream>
+#include <vector>
 
 using namespace std;
 
 class SynchronisationServer {
 private:
+	std::vector<std::string> test;
 
 public:
-	std::string* read_ltsa_exports();
+	std::vector<std::string> read_ltsa_exports();
 	void run();
 };
 #endif

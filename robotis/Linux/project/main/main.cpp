@@ -50,7 +50,6 @@ void sighandler(int sig)
 
 int main(void)
 {
-    printf("test");
     RobotManager manager;
     manager.init_system();
 

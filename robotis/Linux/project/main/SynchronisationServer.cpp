@@ -4,13 +4,13 @@ void SynchronisationServer::run()
 {
 	//std::string process[PROCESSES][STATE][ACTION_LABEL];
 	//process
-	this->read_ltsa_exports();
+	//this->read_ltsa_exports();
 }
 
-string*::SynchronisationServer::read_ltsa_exports()
+vector<string> SynchronisationServer::read_ltsa_exports()
 {
-	string* ltsa_exports;
-	string data, path;
+	vector<string> ltsa_exports;
+	string data, tempdata, path;
 	DIR* dir = opendir("LTSA"); // Open the 'LTSA' directory containing the LTSA exports
 	dirent* file;
 
@@ -22,13 +22,18 @@ string*::SynchronisationServer::read_ltsa_exports()
 
 			sprintf((char*)path.c_str(), "LTSA/%s", file->d_name); // String-format the path of the LTSA export file
 			ltsa_export.open(path.c_str()); // Open the file using the generated path
-			while(getline(ltsa_export, data)) // 
+			while(getline(ltsa_export, tempdata)) // Read trough the selected file line by line
 			{
-				printf("%s\n", data.c_str());
+				tempdata += data;
 			}
-			if(ltsa_export.is_open())
-				ltsa_export.close();
+			printf("open\n");
+			ltsa_exports.push_back(data);
+			ltsa_export.close();
 		}
+	}
+	for(int i = 0; i < ltsa_exports.size(); i++)
+	{
+		printf("ltsa_exports[%d]: %s\n", i, ltsa_exports[i].c_str());
 	}
 	return ltsa_exports;
 }
