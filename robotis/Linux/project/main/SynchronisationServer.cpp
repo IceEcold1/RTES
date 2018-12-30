@@ -20,6 +20,7 @@ vector<string> SynchronisationServer::read_ltsa_exports()
 		{
 			ifstream ltsa_export;
 
+			data = "";
 			sprintf((char*)path.c_str(), "LTSA/%s", file->d_name); // String-format the path of the LTSA export file
 			ltsa_export.open(path.c_str()); // Open the file using the generated path
 			while(getline(ltsa_export, tempdata)) // Read trough the selected file line by line
