@@ -27,8 +27,8 @@ vector<string> SynchronisationServer::read_ltsa_exports()
 			{
 				data += tempdata + "\n";
 			}
-			ltsa_exports.push_back(data);
-			ltsa_export.close();
+			ltsa_exports.push_back(data); // Add the LTSA data to the sting vector
+			ltsa_export.close(); // Close the file
 		}
 	}
 	return ltsa_exports;
