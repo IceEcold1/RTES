@@ -2,9 +2,11 @@
 
 bool RobotManager::init_system()
 {
-	/*SynchronisationServer syncServer;
+	SynchronisationServer syncServer;
 	HDS hds;
-	Arm arm;*/
+	ArmManager arms;
+	LegManager legs;
+	SensorManager sensors;
 	return true;
 }
 

@@ -1,4 +1,9 @@
-#ifndef ROBOT_MANAGER_H
-#define ROBOT_MANAGER_H
+#ifndef SENSOR_MANAGER_H
+#define SENSOR_MANAGER_H
+
+class SensorManager {
+private:
+
+};
 
 #endif

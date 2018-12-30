@@ -1,10 +1,12 @@
 #ifndef ROBOT_MANAGER_H
 #define ROBOT_MANAGER_H
 
+#include <stdio.h>
 #include "SynchronisationServer.h"
 #include "HDS.h"
 #include "ArmManager.h"
-#include <stdio.h>
+#include "LegManager.h"
+#include "SensorManager.h"
 
 class RobotManager {
 public:
