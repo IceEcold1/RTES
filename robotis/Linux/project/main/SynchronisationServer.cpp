@@ -24,16 +24,11 @@ vector<string> SynchronisationServer::read_ltsa_exports()
 			ltsa_export.open(path.c_str()); // Open the file using the generated path
 			while(getline(ltsa_export, tempdata)) // Read trough the selected file line by line
 			{
-				tempdata += data;
+				data += tempdata + "\n";
 			}
-			printf("open\n");
 			ltsa_exports.push_back(data);
 			ltsa_export.close();
 		}
-	}
-	for(int i = 0; i < ltsa_exports.size(); i++)
-	{
-		printf("ltsa_exports[%d]: %s\n", i, ltsa_exports[i].c_str());
 	}
 	return ltsa_exports;
 }

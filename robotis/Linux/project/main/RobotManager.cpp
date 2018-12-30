@@ -3,7 +3,11 @@
 bool RobotManager::init_system()
 {
 	SynchronisationServer syncServer;
-	//syncServer.read_ltsa_exports();
+	vector<string> data = syncServer.read_ltsa_exports();
+	for(int i = 0; i < (int)data.size(); i++)
+	{
+		printf("ltsa_exports[%d]: \n%s\n", i, data[i].c_str());
+	}
 	/*HDS hds;
 	ArmManager arms;
 	LegManager legs;
