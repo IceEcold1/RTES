@@ -3,10 +3,11 @@
 bool RobotManager::init_system()
 {
 	SynchronisationServer syncServer;
-	HDS hds;
+	syncServer.read_ltsa_exports();
+	/*HDS hds;
 	ArmManager arms;
 	LegManager legs;
-	SensorManager sensors;
+	SensorManager sensors;*/
 	return true;
 }
 
