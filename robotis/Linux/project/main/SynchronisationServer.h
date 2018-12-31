@@ -10,12 +10,35 @@
 
 using namespace std;
 
+/*struct process {
+	vector<struct node> nodes;
+	char* processName;
+}
+
+struct node {
+	int beginState;
+	vector<transition> t;
+}
+
+struct transition {
+	char *transName;
+	int nextState;
+}*/
+
+struct ltsa_export {
+	string processID;
+	string fspData;
+};
+
 class SynchronisationServer {
 private:
-	std::vector<std::string> test;
+	//vector<struct process> processes;
+	//vector<FspProcess> processes;
+
 
 public:
-	std::vector<std::string> read_ltsa_exports();
+	vector<ltsa_export> read_ltsa_exports();
 	void run();
+	void parse_process_data();
 };
 #endif
