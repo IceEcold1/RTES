@@ -53,6 +53,10 @@ int main(void)
     RobotManager manager;
     manager.init_system();
 
+    // Dit moet later omlaag maar kan nu niet omdat de main escaped vanwege ontbreken cm730 in VM
+    manager.start_system();
+    while(1){}
+
     signal(SIGABRT, &sighandler);
     signal(SIGTERM, &sighandler);
     signal(SIGQUIT, &sighandler);
@@ -101,8 +105,10 @@ int main(void)
 	printf("Hi\n");
 	sleep(4);
 	move_arm(JointData::ID_L_SHOULDER_PITCH);
-        sleep(2);
-        move_arm(JointData::ID_R_SHOULDER_PITCH);
+    sleep(2);
+    move_arm(JointData::ID_R_SHOULDER_PITCH);
+    //manager.start_system();
+    //while(1){}
     return 0;
 }
 

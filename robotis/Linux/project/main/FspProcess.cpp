@@ -1,11 +1,12 @@
 #include "FspProcess.h"
 
 /*Always include the initial state and full alphabet.*/
-FspProcess::FspProcess(string processID, int state, vector<string> alphabet, vector<string> sensitivityList)
+FspProcess::FspProcess(string process_id, int state, vector<string> alphabet, vector<string> sensitivity_list)
 {
+	this->process_id = process_id;
 	this->state = state;
 	this->alphabet = alphabet;
-	this->sensitivityList = sensitivityList;
+	this->sensitivity_list = sensitivity_list;
 }
 
 /*Check if the sync server sends a signal, based on that single do something.*/
@@ -13,8 +14,8 @@ void::FspProcess::run()
 {
 	while(1)
 	{
-		usleep(1000);
-		//printf("%s\n", )
+		usleep(1000000);
+		printf("Process: '%s', state = %d\n", this->process_id.c_str(), this->state);
 	}
 }
 

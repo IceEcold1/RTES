@@ -25,9 +25,9 @@ vector<struct ltsa_export> SynchronisationServer::read_ltsa_exports()
 			ltsa_export.open(path.c_str()); // Open the file using the generated path
 			while(getline(ltsa_export, data)) // Read trough the selected file line by line
 			{
-				export_data.fspData.push_back(data);
+				export_data.fsp_data.push_back(data);
 			}
-			export_data.processID = file->d_name;
+			export_data.process_id = file->d_name;
 			ltsa_exports.push_back(export_data); // Add the LTSA data to the sting vector
 			ltsa_export.close(); // Close the file
 		}

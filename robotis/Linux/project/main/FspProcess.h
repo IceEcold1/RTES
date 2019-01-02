@@ -8,20 +8,26 @@
 #include <algorithm>
 #include <unistd.h>
 #include <stdlib.h>
+#include <boost/thread.hpp>
+#include <boost/date_time.hpp>
 
 using namespace std;
 
 class FspProcess{
 private:
-	string processID;
+	string process_id;
 	int state;
 	vector<string> alphabet;
-	vector<string> sensitivityList;
+	vector<string> sensitivity_list;
 public:
 	int get_cur_state();
 	bool next_action(string action);
 	void run();
+	//FspProcess(string processID, int state, vector<string> alphabet, vector<string> sensitivityList);
 	FspProcess(string processID, int state, vector<string> alphabet, vector<string> sensitivityList);
+	static void functionCaller(FspProcess* fsp) {
+		fsp->run();
+	}
 };
 
 #endif

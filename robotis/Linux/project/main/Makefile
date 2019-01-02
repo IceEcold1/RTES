@@ -13,7 +13,7 @@ INCLUDE_DIRS = -I../../include -I../../../Framework/include -L /usr/realtime/lib
 
 CXX = g++
 CXXFLAGS += -O2 -DLINUX -Wall $(INCLUDE_DIRS)
-LFLAGS += -lpthread -ljpeg -lrt
+LFLAGS += -lpthread -ljpeg -lrt -lboost_system -lboost_thread
 
 all: darwin.a *.cpp *.o
 	$(CXX) $(CXXFLAGS) -o $(TARGET) -I . *.cpp *.o posix-regex-cpp/POSIXRegex.cpp ../../lib/darwin.a $(LFLAGS)
