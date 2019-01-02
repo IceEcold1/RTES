@@ -16,7 +16,7 @@ CXXFLAGS += -O2 -DLINUX -Wall $(INCLUDE_DIRS)
 LFLAGS += -lpthread -ljpeg -lrt
 
 all: darwin.a *.cpp *.o
-	$(CXX) $(CXXFLAGS) -o $(TARGET) -I . *.cpp *.o ../../lib/darwin.a $(LFLAGS)
+	$(CXX) $(CXXFLAGS) -o $(TARGET) -I . *.cpp *.o posix-regex-cpp/POSIXRegex.cpp ../../lib/darwin.a $(LFLAGS)
 	chmod 755 $(TARGET)
 
 clean:

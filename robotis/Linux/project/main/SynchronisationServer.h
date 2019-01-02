@@ -27,7 +27,7 @@ struct transition {
 
 struct ltsa_export {
 	string processID;
-	string fspData;
+	vector<string> fspData;
 };
 
 class SynchronisationServer {
