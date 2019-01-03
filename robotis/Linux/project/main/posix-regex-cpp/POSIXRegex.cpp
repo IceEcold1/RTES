@@ -18,7 +18,7 @@ Match::Match(string match)
 
 int Match::start(int group)
 {
-    if (group > pgroups.size())
+    if (group > (int)pgroups.size())
         return -1;
 
     return pgroups[group].start;
@@ -26,7 +26,7 @@ int Match::start(int group)
 
 int Match::end(int group)
 {
-    if (group > pgroups.size())
+    if (group > (int)pgroups.size())
         return -1;
 
     return pgroups[group].end;
@@ -34,7 +34,7 @@ int Match::end(int group)
 
 string Match::group(int group)
 {
-    if (group > pgroups.size())
+    if (group > (int)pgroups.size())
         return "";
 
     return match.substr(pgroups[group].start, pgroups[group].end - pgroups[group].start);

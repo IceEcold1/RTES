@@ -9,7 +9,7 @@ struct command {
 	int value;
 };
 
-class HDS: public FspProcess {
+class HDS {
 private:
 	void run();
 	bool send_command_driver(command cmd);

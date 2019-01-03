@@ -21,7 +21,6 @@ bool RobotManager::init_system()
 
 bool RobotManager::start_system()
 {
-	printf("size%d\n", (int)this->processes.size());
 	for(int i = 0; i < (int)this->processes.size(); i++)
 	{
 		new boost::thread(boost::bind(&FspProcess::run, &this->processes[i]));
