@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <fstream>
 #include <vector>
+#include <unistd.h>
 
 using namespace std;
 
@@ -25,11 +26,6 @@ struct transition {
 	int nextState;
 }*/
 
-struct ltsa_export {
-	string process_id;
-	vector<string> fsp_data;
-};
-
 class SynchronisationServer {
 private:
 	//vector<struct process> processes;
@@ -37,7 +33,6 @@ private:
 
 
 public:
-	vector<ltsa_export> read_ltsa_exports();
 	void run();
 	void parse_process_data();
 };

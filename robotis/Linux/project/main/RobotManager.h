@@ -14,14 +14,26 @@
 
 using namespace std;
 
+struct ltsa_export {
+	string process_id;
+	vector<string> fsp_data;
+};
+
 class RobotManager {
 public:
 	bool init_system();
 	bool start_system();
 private:
 	vector<FspProcess> processes;
+	HDS *hds;
+	SynchronisationServer *ss;
+	ArmManager *armManager;
+	LegManager *legManager;
+	SensorManager *sensorManager;
+
 	vector<string> get_alphabet(vector<string> data);
 	vector<string> get_sensitivity_list(int state, vector<string> data);
+	vector<ltsa_export> read_ltsa_exports();
 };
 
 #endif

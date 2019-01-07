@@ -13,7 +13,7 @@
 
 using namespace std;
 
-class FspProcess{
+class FspProcess {
 private:
 	string process_id;
 	int state;
@@ -24,10 +24,7 @@ public:
 	bool next_action(string action);
 	void run();
 	//FspProcess(string processID, int state, vector<string> alphabet, vector<string> sensitivityList);
-	FspProcess(string processID, int state, vector<string> alphabet, vector<string> sensitivityList);
-	static void functionCaller(FspProcess* fsp) {
-		fsp->run();
-	}
+	FspProcess(string processID, int state, vector<string> alphabet, vector<string> sensitivity_list);
 };
 
 #endif
