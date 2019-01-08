@@ -34,6 +34,8 @@ public:
 	void run();
 	FspProcess(string processID, int state, vector<string> alphabet, vector<string> fspData);
 	vector<sens_list> get_sensitivity_list(int state, vector<string> data);
+	vector<string> get_alphabet();
+	string get_process_id();
 };
 
 #endif

@@ -5,13 +5,14 @@ bool RobotManager::init_system()
 	vector<struct ltsa_export> ltsa_data = this->read_ltsa_exports();
 	int size = (int)ltsa_data.size(), init_state = 0;
 
+	this->ss = new SynchronisationServer();
 	for(int i = 0; i < size; i++)
 	{
 		FspProcess *process = new FspProcess(ltsa_data[i].process_id, init_state, this->get_alphabet(ltsa_data[i].fsp_data), ltsa_data[i].fsp_data);
 		this->processes.push_back(*process);
+		this->ss->processes.push_back(*process);
 	}
 	this->hds = new HDS(init_state, this->get_alphabet(ltsa_data[0].fsp_data));
-	this->ss = new SynchronisationServer();
 	this->armManager = new ArmManager();
 	this->legManager = new LegManager();
 	this->sensorManager = new SensorManager();

@@ -98,3 +98,13 @@ bool FspProcess::get_next_state(string action)
 	}
 	return -1;
 }
+
+vector<string> FspProcess::get_alphabet()
+{
+	return this->alphabet;
+}
+
+string FspProcess::get_process_id()
+{
+	return this->process_id;
+}

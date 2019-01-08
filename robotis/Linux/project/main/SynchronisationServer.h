@@ -8,32 +8,24 @@
 #include <fstream>
 #include <vector>
 #include <unistd.h>
+#include "FspProcess.h"
 
 using namespace std;
 
-/*struct process {
-	vector<struct node> nodes;
-	char* processName;
-}
-
-struct node {
-	int beginState;
-	vector<transition> t;
-}
-
-struct transition {
-	char *transName;
-	int nextState;
-}*/
+struct alphabet_process {
+	string action;
+	vector<FspProcess> processes;
+};
 
 class SynchronisationServer {
 private:
-	//vector<struct process> processes;
-	//vector<FspProcess> processes;
-
+vector<alphabet_process> total_alphabet;
+void collect_total_alphabet();
+bool action_exists_in_alphabet(string action);
 
 public:
+	vector<FspProcess> processes;
+
 	void run();
-	void parse_process_data();
 };
 #endif
