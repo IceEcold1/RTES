@@ -32,14 +32,18 @@ bool::FspProcess::next_action(string action)
 	/*Check if the element exists in the alphabet*/
 	if(find(this->alphabet.begin(), this->alphabet.end(), action) != this->alphabet.end())
 	{
-		printf("Action %s found in alphabet", (char *)action.c_str());
-		/*Also check if this action is possible based on the current state*/
-		/*if(action -> state == true)
-			this->state = 0;
-			return true
+		printf("Action %s found in alphabet", action.c_str());
+		/*Also check if this action is possible based on the current state, actions based on states are found in the sensitivity list*/
+		if(find(this->sensitivity_list.begin(), this->sensitivity_list.end(), action) != this->sensitivity_list.end())
+		{
+			printf("Action %s found in sensitivity list", action.c_str());
+			this->state = /*New state*/;
+			return true;
+		}
 		else
-			return false*/
-		return true;
+		{
+			return false;
+		}
 	}
 	else
 	{
