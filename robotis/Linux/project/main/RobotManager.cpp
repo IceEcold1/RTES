@@ -10,7 +10,7 @@ bool RobotManager::init_system()
 		FspProcess *process = new FspProcess(ltsa_data[i].process_id, init_state, this->get_alphabet(ltsa_data[i].fsp_data), this->get_sensitivity_list(init_state, ltsa_data[i].fsp_data));
 		this->processes.push_back(*process);
 	}
-	this->hds = new HDS(init_state, alphabets, sens_lists);
+	this->hds = new HDS(init_state, this->get_alphabet(ltsa_data[0].fsp_data), this->get_sensitivity_list(init_state, ltsa_data[0].fsp_data));
 	this->ss = new SynchronisationServer();
 	this->armManager = new ArmManager();
 	this->legManager = new LegManager();
@@ -83,9 +83,9 @@ vector<struct ltsa_export> RobotManager::read_ltsa_exports()
 	{
 		if(file->d_name[0] != '.')
 		{
-			if(file->d_name)
+			if(strcmp(file->d_name, "HDS.aut") == 0)
 			{
-
+				printf("HDS\n");
 			}
 			struct ltsa_export export_data;
 			ifstream ltsa_export;
