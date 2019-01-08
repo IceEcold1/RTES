@@ -32,7 +32,6 @@ private:
 	SensorManager *sensorManager;
 
 	vector<string> get_alphabet(vector<string> data);
-	vector<string> get_sensitivity_list(int state, vector<string> data);
 	vector<ltsa_export> read_ltsa_exports();
 };
 

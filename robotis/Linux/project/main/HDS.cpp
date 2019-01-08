@@ -1,6 +1,6 @@
 #include "HDS.h"
 
-HDS::HDS(int state, vector <string> alphabet, vector<string> sensitivity_list)
+HDS::HDS(int state, vector <string> alphabet)
 {
 	this->state = state;
 	this->alphabet = alphabet;

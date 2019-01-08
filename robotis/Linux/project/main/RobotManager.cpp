@@ -7,10 +7,10 @@ bool RobotManager::init_system()
 
 	for(int i = 0; i < size; i++)
 	{
-		FspProcess *process = new FspProcess(ltsa_data[i].process_id, init_state, this->get_alphabet(ltsa_data[i].fsp_data), this->get_sensitivity_list(init_state, ltsa_data[i].fsp_data));
+		FspProcess *process = new FspProcess(ltsa_data[i].process_id, init_state, this->get_alphabet(ltsa_data[i].fsp_data), ltsa_data[i].fsp_data);
 		this->processes.push_back(*process);
 	}
-	this->hds = new HDS(init_state, this->get_alphabet(ltsa_data[0].fsp_data), this->get_sensitivity_list(init_state, ltsa_data[0].fsp_data));
+	this->hds = new HDS(init_state, this->get_alphabet(ltsa_data[0].fsp_data));
 	this->ss = new SynchronisationServer();
 	this->armManager = new ArmManager();
 	this->legManager = new LegManager();
@@ -50,27 +50,7 @@ vector<string> RobotManager::get_alphabet(vector<string> data)
 	return res;
 }
 
-vector<string> RobotManager::get_sensitivity_list(int state, vector<string> data)
-{
-	POSIX::Regex re;
-	POSIX::Match m;
-	vector<string> res;
 
-	int size = (int)data.size();
-
-	for(int i = 1; i < size; i++)
-	{
-		re.compile("\\((.*?),.*?,.*?\\)"); // Regex for the first parameter os the data
-		m = re.match(data[i]);
-		if(atoi(m.group(1).c_str()) == state)
-		{
-			re.compile("\\(.*?,(.*?),.*?\\)"); // Regex for the first parameter os the data
-			m = re.match(data[i]);
-			res.push_back(m.group(1));
-		}
-	}
-	return res;
-}
 
 vector<struct ltsa_export> RobotManager::read_ltsa_exports()
 {
@@ -83,10 +63,6 @@ vector<struct ltsa_export> RobotManager::read_ltsa_exports()
 	{
 		if(file->d_name[0] != '.')
 		{
-			if(strcmp(file->d_name, "HDS.aut") == 0)
-			{
-				printf("HDS\n");
-			}
 			struct ltsa_export export_data;
 			ifstream ltsa_export;
 

@@ -23,7 +23,7 @@ private:
 	bool send_command_driver(command cmd);
 	//command format_data(string state);
 public:
-	HDS(int state, vector<string> alphabets, vector<string> sensitivity_lists);
+	HDS(int state, vector<string> alphabets);
 	void run();
 };
 
