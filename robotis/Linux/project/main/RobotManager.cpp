@@ -12,7 +12,8 @@ bool RobotManager::init_system()
 		this->processes.push_back(*process);
 		this->ss->processes.push_back(*process);
 	}
-	this->hds = new HDS(init_state, this->get_alphabet(ltsa_data[0].fsp_data));
+	/*HDS constructor must create base class FspProcess first, since HDS has no sens list, send an empty vector*/
+	this->hds = new HDS("HDS", init_state, this->get_alphabet(ltsa_data[0].fsp_data), vector<string>());
 	this->armManager = new ArmManager();
 	this->legManager = new LegManager();
 	this->sensorManager = new SensorManager();

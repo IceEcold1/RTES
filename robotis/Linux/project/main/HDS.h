@@ -9,6 +9,13 @@
 
 using namespace std;
 
+
+/*Fill based on LTSA labels*/
+enum darwin_string_command{
+	servo_rotate,
+	sensor_read
+};
+
 struct command {
 	int address;
 	int device_command;
@@ -19,7 +26,9 @@ struct command {
 class HDS : public FspProcess{
 private:
 	bool send_command_driver(command cmd);
-	command format_command(string state);
+	command format_command(string state, int action_value);
+	darwin_string_command str_to_enum(string const& action);
+	int parse_action_value(string *action);
 public:
 	/*Constructor, also gets the constructor from the super class*/
 	HDS(string process_id, int state, vector<string> alphabet, vector<string> fspData);
