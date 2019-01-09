@@ -12,6 +12,7 @@ using namespace std;
 
 /*Fill based on LTSA labels*/
 enum darwin_string_command{
+	action_not_found,
 	servo_rotate,
 	sensor_read
 };
