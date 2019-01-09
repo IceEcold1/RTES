@@ -108,3 +108,15 @@ string FspProcess::get_process_id()
 {
 	return this->process_id;
 }
+
+bool::FspProcess::alphabet_contains_action(string action)
+{
+	int size = (int)this->alphabet.size();
+
+	for(int i = 0; i < size; i++)
+	{
+		if(strcmp(action.c_str(), this->alphabet[i].c_str()) == 0)
+			return true;
+	}
+	return false;
+}

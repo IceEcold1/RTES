@@ -37,7 +37,8 @@ void SynchronisationServer::collect_total_alphabet()
 	{
 		for(int j = 0; j < processes_size; j++)
 		{
-			if(this->total_alphabet[i])
+			if(this->processes[j].alphabet_contains_action(this->total_alphabet[i].action) && !this->process_vector_contains_process(this->total_alphabet[i].processes, this->processes[j]))
+				this->total_alphabet[i].processes.push_back(this->processes[j]);
 		}
 	}
 
@@ -61,8 +62,14 @@ bool SynchronisationServer::action_exists_in_alphabet(string action)
 	return false;
 }
 
-bool SynchronisationServer::process_exists_in_alphabet_struct()
+bool SynchronisationServer::process_vector_contains_process(vector<FspProcess> process_vector, FspProcess process)
 {
-	
+	int size = (int)process_vector.size();
+
+	for(int i = 0; i < size; i++)
+	{
+		if(strcmp(process_vector[i].get_process_id().c_str(), process.get_process_id().c_str()) == 0)
+			return true;
+	}
 	return false;
 }

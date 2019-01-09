@@ -12,7 +12,7 @@ bool RobotManager::init_system()
 		this->processes.push_back(*process);
 		this->ss->processes.push_back(*process);
 	}
-	this->hds = new HDS(init_state, this->get_alphabet(ltsa_data[0].fsp_data));
+	//this->hds = new HDS(init_state, this->get_alphabet(ltsa_data[0].fsp_data));
 	this->armManager = new ArmManager();
 	this->legManager = new LegManager();
 	this->sensorManager = new SensorManager();
