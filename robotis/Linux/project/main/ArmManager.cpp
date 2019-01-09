@@ -1,19 +1,12 @@
 #include "ArmManager.h"
 
-bool success;
-int offset;
-int ADD_TO_SERVO_ANGLE;
-int CHANGE_TO_SERVO_ANGLE;
-SynchronisationServer SS;
-Servo leg_servo;
-
 ArmManager::ArmManager(SynchronisationServer SyncServer)
 {
-	this.offset = 0;
-	this.ADD_TO_SERVO_ANGLE = 99999999; //WIP
-	this.CHANGE_TO_SERVO_ANGLE = 99999999; //WIP
-	this.SS = SyncServer;
-	this.leg_servo = new Servo(SyncServer);
+	this->offset = 0;
+	this->ADD_TO_SERVO_ANGLE = 99999999; //WIP
+	this->CHANGE_TO_SERVO_ANGLE = 99999999; //WIP
+	this->SS = SyncServer;
+	this->leg_servo = new Servo(SyncServer);
 }
 
 /*
@@ -23,7 +16,7 @@ ArmManager::ArmManager(SynchronisationServer SyncServer)
  * In the event the Servo.move_servo function returns false the remaining servos aren't commanded and the fucntion
  * returns false.
  */
-bool move_arm(bool relative, bool left_arm, int servoA, int servoB, int servoC)
+ArmManager::bool::move_arm(bool relative, bool left_arm, int servoA, int servoB, int servoC)
 {
 	success = true;
 	if(relative)

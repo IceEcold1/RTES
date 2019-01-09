@@ -10,6 +10,9 @@ void SynchronisationServer::run()
 	}
 }
 
+/*
+ * Loops trough 
+*/
 void SynchronisationServer::collect_total_alphabet()
 {
 	int processes_size = (int)this->processes.size();
