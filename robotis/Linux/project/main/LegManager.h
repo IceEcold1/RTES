@@ -3,7 +3,9 @@
 
 class LegManager {
 public:
-	bool move_leg(bool relative, bool left_leg, int servoA, int servoB, int servoC, int servoD, int servoE, int servoF);
+	bool move_left_leg();
+	bool move_right_leg();
+	SynchronisationServer sync_server;
 };
 
 #endif
