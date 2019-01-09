@@ -22,6 +22,7 @@ private:
 vector<alphabet_process> total_alphabet;
 void collect_total_alphabet();
 bool action_exists_in_alphabet(string action);
+bool process_vector_contains_process(vector<FspProcess> process_vector, FspProcess process);
 
 public:
 	vector<FspProcess> processes;
