@@ -21,7 +21,7 @@ struct sens_list {
 
 class FspProcess {
 
-private:
+protected:
 	string process_id;
 	int state;
 	vector<string> alphabet, fspData;

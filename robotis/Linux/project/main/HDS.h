@@ -5,25 +5,25 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <vector>
+#include "Debug.h"
 
 using namespace std;
 
 struct command {
-	int adress;
+	int address;
 	int device_command;
 	int value;
 };
 
-class HDS {
+/*HDS extends FspProcess*/
+class HDS : public FspProcess{
 private:
-	int state;
-	vector<string> alphabet;
-	vector<string> sensitivity_list;
-
 	bool send_command_driver(command cmd);
-	//command format_data(string state);
+	command format_command(string state);
 public:
-	HDS(int state, vector<string> alphabets);
+	/*Constructor, also gets the constructor from the super class*/
+	HDS(string process_id, int state, vector<string> alphabet, vector<string> fspData);
+	bool next_action(string action);
 	void run();
 };
 

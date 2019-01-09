@@ -89,7 +89,7 @@ vector<sens_list> FspProcess::get_sensitivity_list(int state, vector<string> dat
  * If return value is -1 -> action is not found in sensitivity list
  * Else the return value is the next state
 */
-bool FspProcess::get_next_state(string action)
+bool::FspProcess::get_next_state(string action)
 {
 	for(int i = 0; i < (int)this->sensitivity_list.size(); i++)
 	{
