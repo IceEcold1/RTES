@@ -21,15 +21,16 @@ struct ltsa_export {
 
 class RobotManager {
 public:
+	ArmManager *arm_manager;
+	LegManager *leg_manager;
+	SensorManager *sensor_manager;
+
 	bool init_system();
 	bool start_system();
 private:
 	vector<FspProcess> processes;
 	HDS *hds;
 	SynchronisationServer *sync_server;
-	ArmManager *armManager;
-	LegManager *legManager;
-	SensorManager *sensorManager;
 
 	vector<string> get_alphabet(vector<string> data);
 	vector<ltsa_export> read_ltsa_exports();
