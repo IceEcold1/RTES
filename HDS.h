@@ -10,7 +10,6 @@
 
 using namespace std;
 
-
 /*Fill based on LTSA labels*/
 enum darwin_string_command{
 	action_not_found,
