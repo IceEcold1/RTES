@@ -28,8 +28,8 @@ private:
 	HDS *hds;
 	SynchronisationServer *sync_server;
 	ArmManager *armManager;
-	//LegManager *legManager;
-	//SensorManager *sensorManager;
+	LegManager *legManager;
+	SensorManager *sensorManager;
 
 	vector<string> get_alphabet(vector<string> data);
 	vector<ltsa_export> read_ltsa_exports();

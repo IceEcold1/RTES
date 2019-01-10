@@ -8,8 +8,10 @@ private:
 	SynchronisationServer sync_server;
 public:
 	LegManager(SynchronisationServer sync_server);
-	bool move_left_leg();
-	bool move_right_leg();
+	bool move_left_leg_forward();
+	bool move_left_leg_backward();
+	bool move_right_leg_forward();
+	bool move_right_leg_backward();
 };
 
 #endif

@@ -5,11 +5,14 @@
 
 class ArmManager {
 private:
-	SynchronisationServer *sync_server;
+	SynchronisationServer sync_server;
 	
 public:
-	ArmManager(SynchronisationServer *sync_server);
-	bool move_arm(bool relative, bool left_arm, int servoA, int servoB, int servoC);
+	ArmManager(SynchronisationServer sync_server);
+	bool move_left_arm_forward();
+	bool move_left_arm_backward();
+	bool move_right_arm_forward();
+	bool move_right_arm_backward();
 };
 
 #endif
