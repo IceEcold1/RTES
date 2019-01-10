@@ -12,7 +12,7 @@ TARGET = main
 INCLUDE_DIRS = -L /usr/realtime/lib -I /usr/realtime/include
 
 CXX = g++
-CXXFLAGS += -O2 -DLINUX -Wall $(INCLUDE_DIRS)
+CXXFLAGS += -std=c++0x -O2 -DLINUX -Wall $(INCLUDE_DIRS)
 LFLAGS += -lpthread -ljpeg -lrt -lboost_system -lboost_thread
 
 all: *.cpp
