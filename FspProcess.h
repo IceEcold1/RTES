@@ -1,7 +1,6 @@
 #ifndef PROCESS_H
 #define PROCESS_H
 
-
 #include <string>
 #include <stdio.h>
 #include <vector>
