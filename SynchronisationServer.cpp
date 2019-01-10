@@ -1,18 +1,55 @@
 #include "SynchronisationServer.h"
 
-void SynchronisationServer::run()
+SynchronisationServer::SynchronisationServer()
 {
-	this->collect_total_alphabet();
-	while(1)
-	{
-		printf("SynchronisationServer\n");
-		usleep(1000000);
-	}
+	//init stuff
 }
 
 /*
  * Loops trough 
 */
+void SynchronisationServer::run()
+{
+	this->collect_total_alphabet();
+	this->main_loop();
+}
+
+void SynchronisationServer::main_loop()
+{
+	manager_command current_action;
+	while(true)
+	{
+		if((int)this->action_list.size() > 0)
+		{
+
+			current_action = *this->action_list.begin();
+
+			if(this->action_exists_in_alphabet(current_action.command))
+			{
+				current_action.return_value = this->notify_all_FSP_procs(current_action.command);
+				current_action.resolved = true;
+
+				/*put the result back in the list.data */
+				this->completed_action_list.push_back(current_action);
+				this->action_list.erase(this->action_list.begin());
+			}
+			else
+			{
+				current_action.resolved = false;
+				this->completed_action_list.push_back(current_action);
+				this->action_list.erase(this->action_list.begin());
+			}
+		}
+	}
+}
+
+int SynchronisationServer::notify_all_FSP_procs(string action)
+{
+	//give the value to all all the procs and retrieve the return from the HDS 
+
+	return 1;
+}
+
 void SynchronisationServer::collect_total_alphabet()
 {
 	int processes_size = (int)this->processes.size();
@@ -75,4 +112,31 @@ bool SynchronisationServer::process_vector_contains_process(vector<FspProcess> p
 			return true;
 	}
 	return false;
+}
+
+bool SynchronisationServer::give_acion(manager_command input)
+{
+	try {
+   		this->action_list.push_back(input);
+   		return true;
+	} catch (const std::bad_alloc& e){return false;}
+}
+
+manager_command SynchronisationServer::get_result(manager_command id)
+{
+	int i;
+	manager_command *it;
+	manager_command return_value;
+	for(i = 0, it = this->completed_action_list.begin(); it != this->completed_action_list.end(); ++it, ++i)
+	{
+		if (it->identifier == id)
+		{
+			return_value = *(this->completed_action_list.begin()+i);
+			this->completed_action_list.erase(this->completed_action_list.begin()+i);
+			return return_value;
+		}
+	}
+	
+	return_value.identifier = (manager_id)3;
+	return return_value;
 }
