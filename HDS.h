@@ -13,8 +13,11 @@ using namespace std;
 /*Fill based on LTSA labels*/
 enum darwin_string_command{
 	action_not_found,
+	no_action_needed,
 	servo_rotate,
-	sensor_read
+	sensor_read_x,
+	sensor_read_y,
+	sensor_read_z
 };
 
 struct command {
@@ -26,14 +29,20 @@ struct command {
 /*HDS extends FspProcess*/
 class HDS : public FspProcess{
 private:
-	bool send_command_driver(command cmd);
-	command format_command(string state, int action_value);
+	int send_command_driver(command cmd);
+	command format_command(int id, int address, int action_value);
 	darwin_string_command str_to_enum(string const& action);
-	int parse_action_value(string *action);
+	string parse_action_value(string action);
+	string parse_servo_sensor_id(string action);
+	int next_action(string action);
+	int result;
+	string hds_action;
+	bool transition_running;
+
 public:
 	/*Constructor, also gets the constructor from the super class*/
 	HDS(string process_id, int state, vector<string> alphabet, vector<string> fspData);
-	bool next_action(string action);
+	int execute_action(string action);
 	void run();
 };
 
