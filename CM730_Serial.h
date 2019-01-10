@@ -12,13 +12,18 @@ class CM730Serial
 {
 	public:
 		CM730Serial(); 
-		
-	private:
+
 		enum Methods {
 			read1,
 			write_pair1,
 			write1
 		};
+
+		Method READ;
+		Method WRITE;
+		Method WRITE_PAIR;
+		
+	private:
 
 		typedef struct {
 			int id;
@@ -26,10 +31,6 @@ class CM730Serial
 			int action;
 			int value;
 		} Method;
-
-		Method READ;
-		Method WRITE;
-		Method WRITE_PAIR;
 		
 		enum PacketItem {
 			ID 			= 2,
