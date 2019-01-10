@@ -7,19 +7,20 @@
 #include <termios.h> 
 #include <stdio.h>
 #include <sys/ioctl.h>
+#include <string.h>
 
 class CM730Serial
 {
 	public:
 		CM730Serial(); 
 
-		enum Methods {
+		enum enum_methods {
 			READ,
 			WRITE_PAIR,
 			WRITE
 		};
 
-		/* Variabelen initaliseren mbt op READ en WRITE values. */
+		/* Initialise variables used for read and write*/
 		int READ_LENGTH 		= 4;
 		int READ_ACTION 		= 2;
 		int READ_VALUE			= 2;
@@ -32,11 +33,11 @@ class CM730Serial
 			char message[100];
 		};
 
-		sub_cont_response action(Methods method, int id, int address, int value = -1);
+		sub_cont_response action(enum_methods method, int id, int address, int value = -1);
 		
 	private:
-		/* pakket indexes initaliseren */
-		enum PacketItem {
+		/* Package indexes */
+		enum packet_items {
 			ID 			= 2,
 			LENGTH		= 3,
 			ACTION 		= 4,
@@ -46,11 +47,11 @@ class CM730Serial
 			HIGHBYTE 	= 7
 		};
 
-		int Write(unsigned char* packet, int value, int length);
-		int WritePair(unsigned char* packet, int value, int length);
-		sub_cont_response Read(unsigned char* packet, int length);
+		int write_cm730(unsigned char* packet, int value, int length);
+		int write_pair_cm730(unsigned char* packet, int value, int length);
+		sub_cont_response read_cm730(unsigned char* packet, int length);
 
-		unsigned char getChecksum(unsigned char* packet);
+		unsigned char get_checksum(unsigned char* packet);
 	
 		/* File Descriptor waarnaar geschreven moet wroden */
 		int USB;

@@ -15,11 +15,10 @@ HDS::HDS(string process_id, int state, vector<string> alphabet, vector<string> f
 
 void::HDS::run()
 {
-	int action_return_val = 0;
 	/*Init device driver class*/
-	CM730Serial cm730Serial;
+	this->cm730_serial = new CM730Serial();
 	/*Arm servo's so they can be used*/
-	cm730Serial.action(cm730Serial.WRITE, 256, 24, 1);
+	this->cm730_serial->action(this->cm730_serial->WRITE, 256, 24, 1);
 	while(1)
 	{
 		usleep(1000000);
@@ -47,7 +46,7 @@ int::HDS::next_action(string action)
 		darwin_string_command label = this->str_to_enum(action);
 		string servo_sensor_id = this->parse_servo_sensor_id(action);
 		string action_value = this->parse_action_value(action);
-		struct command driver_command;
+		int address = 0;
 
 		switch(label){
 			case action_not_found: 
@@ -69,52 +68,52 @@ int::HDS::next_action(string action)
 				{
 					printf("Servo %s rotates to position %s.\n", servo_sensor_id.c_str(), action_value.c_str());
 				}
-				return cm730Serial.action(cm730Serial.WRITE, servo_sensor_id.erase(0, 1), 30, stoi(action_value));
+				return this->cm730_serial->action(this->cm730_serial->WRITE, servo_sensor_id.erase(0, 1), 30, stoi(action_value));
 				break;
 			case sensor_read_x:
 				if(DEBUG)
 				{
 					printf("Sensor %s gets the %s (x) axis.\n", servo_sensor_id.c_str(), action_value.c_str());
 				}
-				if(strcmp(servo_sensor_id, "gyro") == 0)
+				if(strcmp(servo_sensor_id.c_str(), "gyro") == 0)
 				{
-					int address = 42;
+					address = 42;
 				}
 				else
 				{
-					int address = 44;
+					address = 44;
 				}
-				return this->message_to_int(cm730Serial.action(cm730Serial.READ, 200, address).message);
+				return this->message_to_int(this->cm730_serial->action(this->cm730_serial->READ, 200, address).message);
 				break;
 			case sensor_read_y:
 				if(DEBUG)
 				{
 					printf("Sensor %s gets the %s (y) axis.\n", servo_sensor_id.c_str(), action_value.c_str());
 				}
-				if(strcmp(servo_sensor_id, "gyro") == 0)
+				if(strcmp(servo_sensor_id.c_str(), "gyro") == 0)
 				{
-					int address = 40;
+					address = 40;
 				}
 				else
 				{
-					int address = 46;
+					address = 46;
 				}
-				return this->message_to_int(cm730Serial.action(cm730Serial.READ, 200, address).message);
+				return this->message_to_int(this->cm730_serial->action(this->cm730_serial->READ, 200, address).message);
 				break;
 			case sensor_read_z:
 				if(DEBUG)
 				{
 					printf("Sensor %s gets the %s (z) axis.\n", servo_sensor_id.c_str(), action_value.c_str());
 				}
-				if(strcmp(servo_sensor_id, "gyro") == 0)
+				if(strcmp(servo_sensor_id.c_str(), "gyro") == 0)
 				{
-					int address = 38;
+					address = 38;
 				}
 				else
 				{
-					int address = 48;
+					address = 48;
 				}
-				return this->message_to_int(cm730Serial.action(cm730Serial.READ, 200, address).message);
+				return this->message_to_int(this->cm730_serial->action(this->cm730_serial->READ, 200, address).message);
 				break;
 			default:
 					return -1;
@@ -129,8 +128,7 @@ int::HDS::next_action(string action)
 
 int::HDS::message_to_int(char* message)
 {
-	int int_message = atoi(message);
-	return int_message;
+	return atoi(message);
 }
 
 /*Generate enum based on string value for switch statement in C++*/
