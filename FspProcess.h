@@ -36,6 +36,7 @@ public:
 	vector<string> get_alphabet();
 	string get_process_id();
 	bool alphabet_contains_action(string action);
+	bool sensitivity_list_contains_action(string action);
 };
 
 #endif

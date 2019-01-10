@@ -1,18 +1,67 @@
 #include "SynchronisationServer.h"
 
-void SynchronisationServer::run()
+SynchronisationServer::SynchronisationServer()
 {
-	this->collect_total_alphabet();
-	while(1)
-	{
-		printf("SynchronisationServer\n");
-		usleep(1000000);
-	}
+	//init stuff
 }
 
 /*
  * Loops trough 
 */
+void SynchronisationServer::run()
+{
+	this->collect_total_alphabet();
+	while(1)
+	{
+		if((int)this->action_list.size() > 0)
+		{
+			if(this->action_exists_in_alphabet(this->action_list[0].action) && action_is_valid(this->action_list[0].action))
+			{
+				this->
+				//current_action.return_value = this->notify_all_FSP_procs(current_action.command);
+				//current_action.resolved = true;
+
+				/*put the result back in the list.data */
+				//this->completed_action_list.push_back(current_action);
+				this->action_list.erase(this->action_list.begin());
+			}
+			else
+			{
+				//current_action.resolved = false;
+				//this->completed_action_list.push_back(current_action);
+				this->action_list.erase(this->action_list.begin());
+			}
+		}
+	}
+}
+
+bool SynchronisationServer::action_is_valid(string action)
+{
+	int size = (int)this->total_alphabet.size();
+
+	for(int i = 0; i < size; i++)
+	{
+		int process_size = (int)this->total_alphabet[i].processes.size();
+
+		if(strcmp(this->total_alphabet[i].action.c_str(), action.c_str()) == 0)
+		{
+			for(int j = 0; j < process_size; j++)
+			{
+				if(!this->total_alphabet[i].processes[j].sensitivity_list_contains_action(this->total_alphabet[i].action))
+					return false;
+			}
+		}
+	}
+	return true;
+}
+
+int SynchronisationServer::notify_all_FSP_procs(string action)
+{
+	//give the value to all all the procs and retrieve the return from the HDS 
+
+	return 1;
+}
+
 void SynchronisationServer::collect_total_alphabet()
 {
 	int processes_size = (int)this->processes.size();
@@ -45,13 +94,13 @@ void SynchronisationServer::collect_total_alphabet()
 		}
 	}
 
-	for(int i = 0; i < (int)this->total_alphabet.size(); i++)
+	/*for(int i = 0; i < (int)this->total_alphabet.size(); i++)
 	{
 		for(int j = 0; j < (int)this->total_alphabet[i].processes.size(); j++)
 		{
 			printf("action[%d]: '%s', process[%d]: '%s'\n", i, this->total_alphabet[i].action.c_str(), j, this->total_alphabet[i].processes[j].get_process_id().c_str());
 		}
-	}
+	}*/
 }
 
 bool SynchronisationServer::action_exists_in_alphabet(string action)
@@ -75,4 +124,28 @@ bool SynchronisationServer::process_vector_contains_process(vector<FspProcess> p
 			return true;
 	}
 	return false;
+}
+
+void SynchronisationServer::give_action(manager_command input)
+{
+	this->action_list.push_back(input);
+}
+
+manager_command SynchronisationServer::get_result(manager_command id)
+{
+	int size = (int)this->action_list.size();
+	manager_command return_value;
+
+	for(int i = 0; i < size; i++)
+	{
+		if (this->action_list[i].identifier == id.identifier)
+		{
+			return_value = this->action_list[i];
+			this->action_list.erase(this->action_list.begin()+i);
+			return return_value;
+		}
+	}
+	
+	return_value.identifier = (manager_id)unknown;
+	return return_value;
 }

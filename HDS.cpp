@@ -178,7 +178,9 @@ string HDS::parse_servo_sensor_id(string action)
 int HDS::execute_action(string action)
 {
 	this->hds_action = action;
-	while(this->transition_running == false)
+	this->transition_running = true;
+
+	while(this->transition_running == true)
 	{
 		/*do nothing*/
 	}

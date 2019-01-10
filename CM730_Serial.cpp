@@ -77,15 +77,15 @@ CM730Serial::sub_cont_response CM730Serial::action(Methods method, int id, int a
 		case WRITE:
 			response.length = this->Write(txpacket, value, length);
 			return response;
-			//break;
+			break;
 		case WRITE_PAIR:
 			response.length = this->WritePair(txpacket, value, length);
 			return response;
-			//break;
+			break;
 		case READ:
 			response = this->Read(txpacket, length);
 			return response;
-			//break;
+			break;
 	}
 
 	/*-1 is an error*/
