@@ -19,18 +19,24 @@ class CM730Serial
 			write1
 		};
 
-		Method READ;
-		Method WRITE;
-		Method WRITE_PAIR;
-		
-	private:
-
 		typedef struct {
 			int id;
 			int length;
 			int action;
 			int value;
 		} Method;
+
+		Method READ;
+		Method WRITE;
+		Method WRITE_PAIR;
+
+
+
+		int action(Method method, int id, int address, int value = -1);
+		
+	private:
+
+		
 		
 		enum PacketItem {
 			ID 			= 2,
@@ -41,8 +47,6 @@ class CM730Serial
 			LOWBYTE 	= 6,
 			HIGHBYTE 	= 7
 		};
-
-		int action(Method method, int id, int address, int value = -1);
 
 		int Write(unsigned char* packet, int value);
 		int WritePair(unsigned char* packet, int value);
