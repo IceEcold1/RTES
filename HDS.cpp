@@ -1,5 +1,6 @@
 #include "HDS.h"
 
+
 /*In C++ constructors of derived classes can only be called after the base class constructor is finished, and must contain the same variables.*/
 HDS::HDS(string process_id, int state, vector<string> alphabet, vector<string> fspData) : FspProcess(process_id, state, alphabet, fspData)
 {
@@ -15,6 +16,10 @@ HDS::HDS(string process_id, int state, vector<string> alphabet, vector<string> f
 void::HDS::run()
 {
 	int action_return_val = 0;
+	/*Init device driver class*/
+	CM730Serial cm730Serial;
+	/*Arm servo's so they can be used*/
+	cm730Serial.action(cm730Serial.WRITE, 256, 24, 1);
 	while(1)
 	{
 		usleep(1000000);
@@ -23,8 +28,7 @@ void::HDS::run()
 		/*Check if an action has to be made.*/
 		if(strcmp(this->hds_action.c_str(), "") == 1)
 		{
-			action_return_val = this->next_action(this->hds_action);
-			this->result = action_return_val;
+			this->result = this->next_action(this->hds_action);
 		}
 	}
 }
@@ -65,34 +69,57 @@ int::HDS::next_action(string action)
 				{
 					printf("Servo %s rotates to position %s.\n", servo_sensor_id.c_str(), action_value.c_str());
 				}
-				driver_command = this->format_command(stoi(servo_sensor_id.erase(0, 1)), 30, stoi(action_value));
+				return cm730Serial.action(cm730Serial.WRITE, servo_sensor_id.erase(0, 1), 30, stoi(action_value));
 				break;
 			case sensor_read_x:
 				if(DEBUG)
 				{
 					printf("Sensor %s gets the %s (x) axis.\n", servo_sensor_id.c_str(), action_value.c_str());
 				}
-				//driver_command = this->format_command((int)servo_sensor_id.erase(0, 1), 30, (int)action_value);
+				if(strcmp(servo_sensor_id, "gyro") == 0)
+				{
+					int address = 42;
+				}
+				else
+				{
+					int address = 44;
+				}
+				return this->message_to_int(cm730Serial.action(cm730Serial.READ, 200, address).message);
 				break;
 			case sensor_read_y:
 				if(DEBUG)
 				{
 					printf("Sensor %s gets the %s (y) axis.\n", servo_sensor_id.c_str(), action_value.c_str());
 				}
-				//driver_command = this->format_command((int)servo_sensor_id.erase(0, 1), 30, (int)action_value);
+				if(strcmp(servo_sensor_id, "gyro") == 0)
+				{
+					int address = 40;
+				}
+				else
+				{
+					int address = 46;
+				}
+				return this->message_to_int(cm730Serial.action(cm730Serial.READ, 200, address).message);
 				break;
 			case sensor_read_z:
 				if(DEBUG)
 				{
 					printf("Sensor %s gets the %s (z) axis.\n", servo_sensor_id.c_str(), action_value.c_str());
 				}
-				//driver_command = this->format_command((int)servo_sensor_id.erase(0, 1), 30, (int)action_value);
+				if(strcmp(servo_sensor_id, "gyro") == 0)
+				{
+					int address = 38;
+				}
+				else
+				{
+					int address = 48;
+				}
+				return this->message_to_int(cm730Serial.action(cm730Serial.READ, 200, address).message);
 				break;
 			default:
 					return -1;
 				break;
 		}
-		return this->send_command_driver(driver_command);
 	}
 	else
 	{
@@ -100,18 +127,10 @@ int::HDS::next_action(string action)
 	}
 }
 
-/*Send the formatted command to the sub-controller*/
-int::HDS::send_command_driver(command cmd)
+int::HDS::message_to_int(char* message)
 {
-	return 0;
-}
-
-/*Format command based on action label and value*/
-command HDS::format_command(int id, int address, int action_value)
-{
-	struct command driver_command;
-	driver_command.value = 0;
-	return driver_command;
+	int int_message = atoi(message);
+	return int_message;
 }
 
 /*Generate enum based on string value for switch statement in C++*/
@@ -164,7 +183,7 @@ int HDS::execute_action(string action)
 		/*do nothing*/
 	}
 	this->transition_running = false;
-
+	this->hds_action = "";
 	return this->result;
 }
 

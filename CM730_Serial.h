@@ -14,30 +14,28 @@ class CM730Serial
 		CM730Serial(); 
 
 		enum Methods {
-			read1,
-			write_pair1,
-			write1
+			READ,
+			WRITE_PAIR,
+			WRITE
 		};
 
-		typedef struct {
-			int id;
+		/* Variabelen initaliseren mbt op READ en WRITE values. */
+		int READ_LENGTH 		= 4;
+		int READ_ACTION 		= 2;
+		int READ_VALUE			= 2;
+		
+		int WRITE_LENGTH		= 5;
+		int WRITE_ACTION		= 3;
+		
+		struct sub_cont_response{
 			int length;
-			int action;
-			int value;
-		} Method;
+			char message[100];
+		};
 
-		Method READ;
-		Method WRITE;
-		Method WRITE_PAIR;
-
-
-
-		int action(Method method, int id, int address, int value = -1);
+		sub_cont_response action(Methods method, int id, int address, int value = -1);
 		
 	private:
-
-		
-		
+		/* pakket indexes initaliseren */
 		enum PacketItem {
 			ID 			= 2,
 			LENGTH		= 3,
@@ -48,20 +46,14 @@ class CM730Serial
 			HIGHBYTE 	= 7
 		};
 
-		int Write(unsigned char* packet, int value);
-		int WritePair(unsigned char* packet, int value);
-		int Read(unsigned char* packet);
+		int Write(unsigned char* packet, int value, int length);
+		int WritePair(unsigned char* packet, int value, int length);
+		sub_cont_response Read(unsigned char* packet, int length);
 
 		unsigned char getChecksum(unsigned char* packet);
 	
+		/* File Descriptor waarnaar geschreven moet wroden */
 		int USB;
-		
-		struct termios tty;
-		struct serial_struct serinfo;
-		
-		static constexpr double baudrate = 1000000.0;
-	
-		
 };
 
 #endif

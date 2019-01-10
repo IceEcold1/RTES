@@ -1,104 +1,143 @@
 #include "CM730_Serial.h"
 
 CM730Serial::CM730Serial() {
-	this->READ.id 			= read1;	
-	this->READ.length 		= 4;
-	this->READ.action 		= 2;
-	this->READ.value 		= 2;
+	double baudrate = 1000000.0;
 
-	this->WRITE.id 			= write1;
-	this->WRITE.length 		= 5;
-	this->WRITE.action 		= 3;
-	this->WRITE.value 		= 0;
-
-	this->WRITE_PAIR.id 	= write_pair1;
-	this->WRITE_PAIR.length = 5;
-	this->WRITE_PAIR.action = 3;
-	this->WRITE_PAIR.value 	= 0;
-
+	struct termios tty;
+	struct serial_struct serinfo;
+	
+	// Seriele communicatie opzetten.
 	this->USB = open("/dev/ttyUSB0", O_RDWR|O_NOCTTY|O_NONBLOCK);
 	
-	cfsetospeed(&this->tty, (speed_t)baudrate);
-	cfsetispeed(&this->tty, (speed_t)baudrate);
+	// Baudrate instellen.
+	cfsetospeed(&tty, (speed_t)baudrate);
+	cfsetispeed(&tty, (speed_t)baudrate);
 	
-	this->tty.c_cflag      = B38400|CS8|CLOCAL|CREAD;
-	this->tty.c_iflag      = IGNPAR;
-	this->tty.c_oflag      = 0;
-	this->tty.c_lflag      = 0;
-	this->tty.c_cc[VTIME]  = 0;
-	this->tty.c_cc[VMIN]   = 0;
-
+	// Gegevens initaliseren die nodig zijn voor de communicatie.
+	tty.c_cflag      = B38400|CS8|CLOCAL|CREAD;
+	tty.c_iflag      = IGNPAR;
+	tty.c_oflag      = 0;
+	tty.c_lflag      = 0;
+	tty.c_cc[VTIME]  = 0;
+	tty.c_cc[VMIN]   = 0;
+	
+	/* Wordt gebruikt zodat commando's verstuurd kunnen worden */
 	ioctl(USB, TIOCGSERIAL, &serinfo);
 
-	this->serinfo.flags &= ~ASYNC_SPD_MASK;
-    this->serinfo.flags |= ASYNC_SPD_CUST;
-    this->serinfo.custom_divisor = serinfo.baud_base / baudrate;
+	/* Flags initaliseren */
+	serinfo.flags &= ~ASYNC_SPD_MASK;
+    serinfo.flags |= ASYNC_SPD_CUST;
+    serinfo.custom_divisor = serinfo.baud_base / baudrate;
 
-   	ioctl(this->USB, TIOCSSERIAL, &this->serinfo);
+   	ioctl(USB, TIOCSSERIAL, &serinfo);
 	
-	cfmakeraw(&this->tty);
+	cfmakeraw(&tty);
 	
+	/* Gegevens weggooien die nooit zijn gebruikt */
 	tcflush(this->USB, TCIFLUSH);
 	
-	tcsetattr(this->USB, TCSANOW, &this->tty);
+	/* Termios gegevens klaarzetten */
+	tcsetattr(this->USB, TCSANOW, &tty);
 }
 
-int CM730Serial::action(Method method, int id, int address, int value) {
-	unsigned char packet[256 + 10] 	= {0, };
+CM730Serial::sub_cont_response CM730Serial::action(Methods method, int id, int address, int value) {
+	/* Pakket opstellen die opgestuurd moet worden naar de sub-controller */
+	unsigned char txpacket[256 + 10] = {0, };
 	
-	packet[0] = 0xFF;
-	packet[1] = 0xFF;
+	/* Struct waarin de ontvangen gegevens worden opgeslagen. */
+	sub_cont_response response;
+
+	txpacket[0] = 0xFF;
+	txpacket[1] = 0xFF;
+
+	txpacket[ID] = (unsigned char)id;
+	txpacket[ADDRESS] = (unsigned char)address;
 	
-	packet[ID] 		= (unsigned char)id;
-	packet[LENGTH] 	= method.length;
-	packet[ADDRESS] = (unsigned char)address;
-	packet[ACTION]	= (unsigned char)method.action;
-	
-	unsigned char checksum = this->getChecksum(packet);
-	
-	int length = method.length + 4;
-	packet[length - 1] = checksum;
-	
-	switch(method.id) {
-		case write1:
-			this->Write(packet, value);
-			break;
-		case write_pair1:
-			this->WritePair(packet, value);
-			break;
-		case read1:
-			this->Read(packet);
-			break;
+	if(method == READ) {
+		txpacket[LENGTH] = READ_LENGTH;	
+		txpacket[ACTION] = (unsigned char)READ_ACTION;
 	}
-	return 0;
-}
-
-int CM730Serial::Write(unsigned char* packet, int value) {
-	packet[VALUE] = (unsigned char)value;
+	else {
+		txpacket[LENGTH] = WRITE_LENGTH;	
+		txpacket[ACTION] = (unsigned char)WRITE_ACTION;
+	}
 	
-	return write(this->USB, packet, (WRITE.length + 4));
-}
+	/*unsigned char lowByte 	= (unsigned char)(value & 0xff);
+	unsigned char highByte	= (unsigned char)((value & 0xff00) >> 8); 
 
-int CM730Serial::WritePair(unsigned char* packet, int value) {
+	txpacket[LOWBYTE] = lowByte;
+	txpacket[HIGHBYTE] = highByte; */
+	
+	unsigned char checksum = this->getChecksum(txpacket);
+	
+	int length = txpacket[LENGTH] + 4; 
+	txpacket[length - 1] = checksum;
+
+	switch(method) {
+		case WRITE:
+			response.length = this->Write(txpacket, value, length);
+			return response;
+			//break;
+		case WRITE_PAIR:
+			response.length = this->WritePair(txpacket, value, length);
+			return response;
+			//break;
+		case READ:
+			response = this->Read(txpacket, length);
+			return response;
+			//break;
+	}
+
+	/*-1 is an error*/
+	response.length = -1;
+	return response;
+}
+/* Schrijven naar één adres */
+int CM730Serial::Write(unsigned char* packet, int value, int length) {
+	packet[VALUE] = (unsigned char)value;
+
+	printf("packet: %s\n", packet);
+	
+	return write(this->USB, packet, length);
+}
+/* Schrijven naar 2 addressen: Low en High byte die gebruikt worden in de sub-controller */
+int CM730Serial::WritePair(unsigned char* packet, int value, int length) {
+
 	unsigned char lowByte 	= (unsigned char)(value & 0xff);
 	unsigned char highByte	= (unsigned char)((value & 0xff00) >> 8); 
+
+	packet[LOWBYTE] = lowByte;
+	packet[HIGHBYTE] = highByte;
 	
-	packet[LOWBYTE] 	= lowByte; 
-	packet[HIGHBYTE] 	= highByte;
-	
-	return write(this->USB, packet, (WRITE.length + 4));
+	return written = write(this->USB, packet, length);
+
+	return written;
 }
 
-int CM730Serial::Read(unsigned char* packet) {	
+/* Lezen uit 2 adressen. Low en high byte. */
+CM730Serial::sub_cont_response CM730Serial::Read(unsigned char* packet, int length) {	
 	packet[VALUE] = READ.value;
+	/* Vraag aan de sub-controller om gegevens op te sturen */
+	write(this->USB, packet, length);
 	
-	return read(this->USB, packet, (WRITE.length + 4));
+	sub_cont_response response;
+	
+	char[100] readMessage;
+
+	int to_length = packet[VALUE] + 6;
+	
+	/* Lees de gegevens */
+	response.length = read(this->USB, readMessage, sizeof readMessage);
+	response.message = readMessage;
+
+	return response;
 }
 
+/* Checksum aanmaken die meegestuurd worden in de commando */
 unsigned char CM730Serial::getChecksum(unsigned char* packet) {
 	unsigned char checksum = 0x00;
 	
-	for(int i = 2; i < packet[3] + 3; i++) checksum += packet[i];
+	for(int i = 2; i < packet[LENGTH] + 3; i++) checksum += packet[i];
 	
 	return ~checksum;
 }

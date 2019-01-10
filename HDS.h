@@ -7,6 +7,7 @@
 #include <vector>
 #include "Debug.h"
 #include "FspProcess.h"
+#include "CM730_Serial.h"
 
 using namespace std;
 
@@ -20,17 +21,10 @@ enum darwin_string_command{
 	sensor_read_z
 };
 
-struct command {
-	int address;
-	int device_command;
-	int value;
-};
-
 /*HDS extends FspProcess*/
 class HDS : public FspProcess{
 private:
-	int send_command_driver(command cmd);
-	command format_command(int id, int address, int action_value);
+	int message_to_int(char* message);
 	darwin_string_command str_to_enum(string const& action);
 	string parse_action_value(string action);
 	string parse_servo_sensor_id(string action);
