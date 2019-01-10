@@ -6,7 +6,10 @@ SynchronisationServer::SynchronisationServer(HDS *hds)
 }
 
 /*
- * Loops trough 
+ * checks if the action_list (FIFO) contains action(s)
+ * if so, the function checks if the action exists in the 'total_alphabet' vector and if the action is valid
+ * the ation is valid when the sensitivity_lists of the processes that are linked to the specified action contain the current action
+ * then the hds executes the action
 */
 void SynchronisationServer::run()
 {
@@ -128,13 +131,17 @@ bool SynchronisationServer::process_vector_contains_process(vector<FspProcess> p
 }
 
 /*
-* public function to add a command to the FIFO-buffer from the managers
+* Public function to add a command to the FIFO-buffer from the managers
 */
 void SynchronisationServer::give_action(manager_command input)
 {
 	this->action_list.push_back(input);
 }
 
+/*
+* Returns the result of an action
+* Checks if the identifier of the action in the FIFO is equal to the identifier in the specified manager_command (struct)
+*/
 manager_command SynchronisationServer::get_result(manager_command id)
 {
 	int size = (int)this->action_list.size();
