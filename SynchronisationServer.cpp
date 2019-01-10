@@ -3,7 +3,6 @@
 SynchronisationServer::SynchronisationServer(HDS *hds)
 {
 	this->hds = hds;
-	//init stuff
 }
 
 /*
@@ -18,12 +17,7 @@ void SynchronisationServer::run()
 		{
 			if(this->action_exists_in_alphabet(this->action_list[0].action) && action_is_valid(this->action_list[0].action))
 			{
-				//this->
-				//current_action.return_value = this->notify_all_FSP_procs(current_action.command);
-				//current_action.resolved = true;
-
-				/*put the result back in the list.data */
-				//this->completed_action_list.push_back(current_action);
+				this->hds->execute_action(this->action_list[0].action);
 				this->action_list.erase(this->action_list.begin());
 			}
 			else
@@ -36,6 +30,9 @@ void SynchronisationServer::run()
 	}
 }
 
+/*
+* Checks if the specified action exists in the sensitivity_lists of the processes that are linked to the specified action
+*/
 bool SynchronisationServer::action_is_valid(string action)
 {
 	int size = (int)this->total_alphabet.size();
@@ -56,13 +53,10 @@ bool SynchronisationServer::action_is_valid(string action)
 	return true;
 }
 
-int SynchronisationServer::notify_all_FSP_procs(string action)
-{
-	//give the value to all all the procs and retrieve the return from the HDS 
-
-	return 1;
-}
-
+/*
+* Loops trough all the processes and makes a list with unique actions
+* Every item in the list contains an action and the processes linked that contain the action
+*/
 void SynchronisationServer::collect_total_alphabet()
 {
 	int processes_size = (int)this->processes.size();
@@ -104,6 +98,9 @@ void SynchronisationServer::collect_total_alphabet()
 	}*/
 }
 
+/*
+* Returns wether the specified action contains in the locally defubed 'total_alphabet' vector
+*/
 bool SynchronisationServer::action_exists_in_alphabet(string action)
 {
 	int size = (int)this->total_alphabet.size();
@@ -115,6 +112,9 @@ bool SynchronisationServer::action_exists_in_alphabet(string action)
 	return false;
 }
 
+/*
+* Returns wether the specified process exists in the specified process_vector
+*/
 bool SynchronisationServer::process_vector_contains_process(vector<FspProcess> process_vector, FspProcess process)
 {
 	int size = (int)process_vector.size();
@@ -127,6 +127,9 @@ bool SynchronisationServer::process_vector_contains_process(vector<FspProcess> p
 	return false;
 }
 
+/*
+* public function to add a command to the FIFO-buffer from the managers
+*/
 void SynchronisationServer::give_action(manager_command input)
 {
 	this->action_list.push_back(input);

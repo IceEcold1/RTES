@@ -39,7 +39,6 @@ private:
 	HDS *hds;
 	bool working;
 
-	int notify_all_FSP_procs(string action);
 	void collect_total_alphabet();
 	bool action_exists_in_alphabet(string action);
 	bool process_vector_contains_process(vector<FspProcess> process_vector, FspProcess process);
