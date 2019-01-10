@@ -1,6 +1,6 @@
 #include "LegManager.h"
 
-LegManager::LegManager(SynchronisationServer sync_server)
+LegManager::LegManager(SynchronisationServer *sync_server)
 {
 	this->sync_server = sync_server;
 }

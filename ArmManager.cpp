@@ -1,6 +1,6 @@
 #include "ArmManager.h"
 
-ArmManager::ArmManager(SynchronisationServer sync_server)
+ArmManager::ArmManager(SynchronisationServer *sync_server)
 {
 	this->sync_server = sync_server;
 }
@@ -12,7 +12,7 @@ bool ArmManager::move_left_arm_forward()
 	cmd.identifier = (manager_id)arm_manager;
 	cmd.action = "move_left_arm.forward";
 	
-	this->sync_server.give_action(cmd);
+	this->sync_server->give_action(cmd);
 	printf("ArmManager::move_left_arm_forward()\n");
 	return true;
 }

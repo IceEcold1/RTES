@@ -5,18 +5,18 @@ bool RobotManager::init_system()
 	vector<struct ltsa_export> ltsa_data = this->read_ltsa_exports();
 	int size = (int)ltsa_data.size(), init_state = 0;
 
-	this->sync_server = new SynchronisationServer();
+	/*HDS constructor must create base class FspProcess first, since HDS has no sens list, send an empty vector*/
+	this->hds = new HDS("HDS", init_state, this->get_alphabet(ltsa_data[0].fsp_data), vector<string>());
+	this->sync_server = new SynchronisationServer(this->hds);
 	for(int i = 0; i < size; i++)
 	{
 		FspProcess *process = new FspProcess(ltsa_data[i].process_id, init_state, this->get_alphabet(ltsa_data[i].fsp_data), ltsa_data[i].fsp_data);
 		this->processes.push_back(*process);
 		this->sync_server->processes.push_back(*process);
 	}
-	/*HDS constructor must create base class FspProcess first, since HDS has no sens list, send an empty vector*/
-	this->hds = new HDS("HDS", init_state, this->get_alphabet(ltsa_data[0].fsp_data), vector<string>());
-	this->arm_manager = new ArmManager(*this->sync_server);
-	this->leg_manager = new LegManager(*this->sync_server);
-	this->sensor_manager = new SensorManager(*this->sync_server);
+	this->arm_manager = new ArmManager(this->sync_server);
+	this->leg_manager = new LegManager(this->sync_server);
+	this->sensor_manager = new SensorManager(this->sync_server);
 	return true;
 }
 

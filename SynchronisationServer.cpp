@@ -1,7 +1,8 @@
 #include "SynchronisationServer.h"
 
-SynchronisationServer::SynchronisationServer()
+SynchronisationServer::SynchronisationServer(HDS *hds)
 {
+	this->hds = hds;
 	//init stuff
 }
 
@@ -17,7 +18,7 @@ void SynchronisationServer::run()
 		{
 			if(this->action_exists_in_alphabet(this->action_list[0].action) && action_is_valid(this->action_list[0].action))
 			{
-				this->
+				//this->
 				//current_action.return_value = this->notify_all_FSP_procs(current_action.command);
 				//current_action.resolved = true;
 

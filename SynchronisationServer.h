@@ -9,6 +9,7 @@
 #include <vector>
 #include <unistd.h>
 #include "FspProcess.h"
+#include "HDS.h"
 
 using namespace std;
 
@@ -35,6 +36,7 @@ class SynchronisationServer {
 private:
 	vector<alphabet_process> total_alphabet;
 	vector<manager_command> action_list;
+	HDS *hds;
 	bool working;
 
 	int notify_all_FSP_procs(string action);
@@ -44,7 +46,7 @@ private:
 	bool action_is_valid(string action);
 
 public:
-	SynchronisationServer();
+	SynchronisationServer(HDS *hds);
 	vector<FspProcess> processes;
 	void run();
 	void give_action(manager_command input);

@@ -9,9 +9,9 @@ struct sensor_data {
 
 class SensorManager {
 private:
-	SynchronisationServer sync_server;
+	SynchronisationServer *sync_server;
 public:
-	SensorManager(SynchronisationServer sync_server);
+	SensorManager(SynchronisationServer *sync_server);
 	sensor_data get_gyro_data();
 	sensor_data get_accelero_data();
 };

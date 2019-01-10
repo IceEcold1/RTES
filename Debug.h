@@ -1,5 +1,5 @@
-#ifndef ROBOT_MANAGER_H
-#define ROBOT_MANAGER_H
+#ifndef DEBUG_H
+#define DEBUG_H
 
 bool DEBUG = true;
 
