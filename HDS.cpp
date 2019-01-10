@@ -138,6 +138,8 @@ string HDS::parse_action_value(string action)
 	POSIX::Match m;
 	re.compile("\\((\\w+)\\.\\w+\\.\\w+\\)"); 
 	m = re.match(action);
+	if(DEBUG)
+		printf("Parse_action_value: %s\n", m.group(1).c_str());
 	return m.group(1);
 }
 
@@ -148,6 +150,8 @@ string HDS::parse_servo_sensor_id(string action)
 	POSIX::Match m;
 	re.compile("\\(\\w+\\.\\w+\\.(\\w+\\))"); 
 	m = re.match(action);
+	if(DEBUG)
+		printf("Parse_servo_sensor_id: %s\n", m.group(1).c_str());
 	return m.group(1);
 }
 
