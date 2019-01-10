@@ -9,26 +9,23 @@
 
 TARGET = main
 
-INCLUDE_DIRS = -I../../include -I../../../Framework/include -L /usr/realtime/lib -I /usr/realtime/include
+INCLUDE_DIRS = -L /usr/realtime/lib -I /usr/realtime/include
 
 CXX = g++
 CXXFLAGS += -O2 -DLINUX -Wall $(INCLUDE_DIRS)
 LFLAGS += -lpthread -ljpeg -lrt -lboost_system -lboost_thread
 
-all: darwin.a *.cpp *.o
-	$(CXX) $(CXXFLAGS) -o $(TARGET) -I . *.cpp *.o posix-regex-cpp/POSIXRegex.cpp ../../lib/darwin.a $(LFLAGS)
+all: *.cpp *.o
+	$(CXX) $(CXXFLAGS) -o $(TARGET) -I . *.cpp *.o posix-regex-cpp/POSIXRegex.cpp $(LFLAGS)
 	chmod 755 $(TARGET)
 
 clean:
 	rm -f *.a *.o $(TARGET) core *~ *.so *.lo
 
 libclean:
-	make -C ../../build clean
+	make -C clean
 
 distclean: clean libclean
-
-darwin.a:
-	make -C ../../build
 
 # useful to make a backup "make tgz"
 tgz: clean
