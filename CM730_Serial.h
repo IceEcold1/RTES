@@ -14,27 +14,22 @@ class CM730Serial
 		CM730Serial(); 
 		
 	private:
-		enum class READ {
-			Length 	= 4,
-			Action 	= 2,
-			Value 	= 2
-		}
-		
-		enum class WRITE {
-			Length 	= 5,
-			Action	= 3
-		}
-		
-		enum class WRITE_PAIR {
-			Length 	= 5,
-			Action 	= 3
-		}
-		
+		enum Methods {
+			read1,
+			write_pair1,
+			write1
+		};
+
 		typedef struct {
-			READ 		read;
-			WRITE 		write;
-			WRITE_PAIR 	write_pair;
-		} TYPE;
+			int id;
+			int length;
+			int action;
+			int value;
+		} Method;
+
+		Method READ;
+		Method WRITE;
+		Method WRITE_PAIR;
 		
 		enum PacketItem {
 			ID 			= 2,
@@ -44,16 +39,22 @@ class CM730Serial
 			VALUE 		= 6,
 			LOWBYTE 	= 6,
 			HIGHBYTE 	= 7
-		}
+		};
 
-		int action(TYPE type, int id, int address, int value = -1);
+		int action(Method method, int id, int address, int value = -1);
+
+		int Write(unsigned char* packet, int value);
+		int WritePair(unsigned char* packet, int value);
+		int Read(unsigned char* packet);
+
+		unsigned char getChecksum(unsigned char* packet);
 	
 		int USB;
 		
 		struct termios tty;
 		struct serial_struct serinfo;
 		
-		double baudrate = 1000000.0;
+		static constexpr double baudrate = 1000000.0;
 	
 		
 };
