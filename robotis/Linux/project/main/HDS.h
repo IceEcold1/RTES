@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <vector>
 #include "Debug.h"
+#include "FspProcess.h"
 
 using namespace std;
 

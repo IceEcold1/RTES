@@ -5,18 +5,18 @@ bool RobotManager::init_system()
 	vector<struct ltsa_export> ltsa_data = this->read_ltsa_exports();
 	int size = (int)ltsa_data.size(), init_state = 0;
 
-	this->ss = new SynchronisationServer();
+	this->sync_server = new SynchronisationServer();
 	for(int i = 0; i < size; i++)
 	{
 		FspProcess *process = new FspProcess(ltsa_data[i].process_id, init_state, this->get_alphabet(ltsa_data[i].fsp_data), ltsa_data[i].fsp_data);
 		this->processes.push_back(*process);
-		this->ss->processes.push_back(*process);
+		this->sync_server->processes.push_back(*process);
 	}
 	/*HDS constructor must create base class FspProcess first, since HDS has no sens list, send an empty vector*/
 	this->hds = new HDS("HDS", init_state, this->get_alphabet(ltsa_data[0].fsp_data), vector<string>());
-	this->armManager = new ArmManager();
-	this->legManager = new LegManager();
-	this->sensorManager = new SensorManager();
+	this->armManager = new ArmManager(*this->sync_server);
+	this->legManager = new LegManager(*this->sync_server);
+	this->sensorManager = new SensorManager(*this->sync_server);
 	return true;
 }
 
@@ -30,7 +30,7 @@ bool RobotManager::start_system()
 		new boost::thread(boost::bind(&FspProcess::run, &this->processes[i]));
 	}
 	new boost::thread(boost::bind(&HDS::run, this->hds));
-	new boost::thread(boost::bind(&SynchronisationServer::run, this->ss));
+	new boost::thread(boost::bind(&SynchronisationServer::run, this->sync_server));
 	return true;
 }
 

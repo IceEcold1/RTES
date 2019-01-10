@@ -3,7 +3,7 @@
 
 LegManager::LegManager(SynchronisationServer sync_server)
 {
-	this.sync_server = SyncServer;
+	this->sync_server = sync_server;
 }
 
 bool LegManager::move_left_leg()

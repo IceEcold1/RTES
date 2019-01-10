@@ -26,7 +26,7 @@ public:
 private:
 	vector<FspProcess> processes;
 	HDS *hds;
-	SynchronisationServer *ss;
+	SynchronisationServer *sync_server;
 	ArmManager *armManager;
 	LegManager *legManager;
 	SensorManager *sensorManager;
