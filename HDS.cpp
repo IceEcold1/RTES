@@ -22,12 +22,11 @@ void::HDS::run()
 	while(1)
 	{
 		usleep(1000000);
-			//printf("HDS, state: %d\n", this->state);
+		printf("HDS: action: (%s)\n", this->hds_action.c_str());
 		/*Check if an action has to be made.*/
-		printf("HDS::get_hds_action(): '%s'\n", this->get_hds_action().c_str());
-		if(strcmp(this->get_hds_action().c_str(), "") != 0)
+		if(strcmp(this->hds_action.c_str(), "") != 0)
 		{
-			printf("HDS: action found\n");
+			printf("HDS: action found (%s)\n", this->hds_action.c_str());
 			this->result = this->next_action(this->hds_action);
 		}
 	}
@@ -38,28 +37,27 @@ void::HDS::run()
 /*Return sensor value, -1 if errors are found or 0 if the servo has to be moved.*/
 int::HDS::next_action(string action)
 {
-	printf("Hij komt in deze functie lol\n");
 	/*Check if the element exists in the alphabet*/
 	if(find(this->alphabet.begin(), this->alphabet.end(), action) != this->alphabet.end())
 	{
-			//printf("HDS: Action %s found in alphabet", action.c_str());
+		//printf("HDS: Action %s found in alphabet\n", action.c_str());
 		darwin_string_command label = this->str_to_enum(action);
-		printf("str_to_enum werkt\n");
+		//printf("HDS: str_to_enum werkt %i\n", (int)label);
 		string servo_sensor_id = this->parse_servo_sensor_id(action);
-		printf("parse_servo_sensor_id werkt\n");
+		printf("HDS: parse_servo_sensor_id werkt(%s)\n", servo_sensor_id.c_str());
 		string action_value = this->parse_action_value(action);
-		printf("parse_action_value werkt\n");
+		//printf("HDS: parse_action_value werkt: (%s)\n", action_value.c_str());
 		int address = 0, test;
 
-		printf("Servo %s rotates to position %s.\n", servo_sensor_id.c_str(), action_value.c_str());
+		//printf("Servo %s rotates to position %s.\n", servo_sensor_id.c_str(), action_value.c_str());
 
 		switch(label){
 			case action_not_found: 
-					//printf("Action is not added to enum/not found.\n");
+					printf("Action is not added to enum/not found.\n");
 				return -1;
 				break;
 			case no_action_needed: 
-					//printf("No command is needed for this action.\n");
+					printf("No command is needed for this action.\n");
 				return -1;
 				break;
 			case servo_rotate: 
@@ -69,7 +67,7 @@ int::HDS::next_action(string action)
 				return test;
 				break;
 			case sensor_read_x:
-					//printf("Sensor %s gets the %s (x) axis.\n", servo_sensor_id.c_str(), action_value.c_str());
+					printf("Sensor %s gets the %s (x) axis.\n", servo_sensor_id.c_str(), action_value.c_str());
 				if(strcmp(servo_sensor_id.c_str(), "gyro") == 0)
 				{
 					address = 42;
@@ -81,7 +79,7 @@ int::HDS::next_action(string action)
 				return this->message_to_int(this->cm730_serial->action(this->cm730_serial->READ, 200, address).message);
 				break;
 			case sensor_read_y:
-					//printf("Sensor %s gets the %s (y) axis.\n", servo_sensor_id.c_str(), action_value.c_str());
+					printf("Sensor %s gets the %s (y) axis.\n", servo_sensor_id.c_str(), action_value.c_str());
 				if(strcmp(servo_sensor_id.c_str(), "gyro") == 0)
 				{
 					address = 40;
@@ -93,7 +91,7 @@ int::HDS::next_action(string action)
 				return this->message_to_int(this->cm730_serial->action(this->cm730_serial->READ, 200, address).message);
 				break;
 			case sensor_read_z:
-					//printf("Sensor %s gets the %s (z) axis.\n", servo_sensor_id.c_str(), action_value.c_str());
+					printf("Sensor %s gets the %s (z) axis.\n", servo_sensor_id.c_str(), action_value.c_str());
 				if(strcmp(servo_sensor_id.c_str(), "gyro") == 0)
 				{
 					address = 38;
@@ -121,17 +119,17 @@ int::HDS::message_to_int(char* message)
 }
 
 /*Generate enum based on string value for switch statement in C++*/
-darwin_string_command HDS::str_to_enum(string const& action) {
+darwin_string_command HDS::str_to_enum(string action) {
 
-    if (action.find("rotate") > 0)
+    if (action.find("rotate") != string::npos)
     	return servo_rotate;
-    else if (action.find("get_data.x") > 0)
+    else if (action.find("get_data.x") != string::npos)
     	return sensor_read_x;
-	else if (action.find("get_data.y") > 0)
+	else if (action.find("get_data.y") != string::npos)
 		return sensor_read_y;
-	else if (action.find("get_data.z") > 0)
+	else if (action.find("get_data.z") != string::npos)
 		return sensor_read_z;
-	else if (action.find("move_") > 0)
+	else if (action.find("move_") != string::npos)
 		return no_action_needed;
 
     return action_not_found;
@@ -140,12 +138,13 @@ darwin_string_command HDS::str_to_enum(string const& action) {
 /*Get the value from the action.*/
 string HDS::parse_action_value(string action)
 {
-	POSIX::Regex re;
-	POSIX::Match m;
-	re.compile("\\((\\w+)\\.\\w+\\.\\w+\\)"); 
-	m = re.match(action);
-		//printf("Parse_action_value: %s\n", m.group(1).c_str());
-	return m.group(1);
+	printf("Parse_action_value init value: %s\n", action.c_str());
+	POSIX::Regex regex;
+	POSIX::Match match;
+	regex.compile("\\((\\w+)\\.\\w+\\.\\w+\\)"); 
+	match = regex.match(action);
+	printf("Parse_action_value: %s\n", match.group(3).c_str());
+	return match.group(1);
 }
 
 /*Get the servo id or sensor type from the action.*/
@@ -172,9 +171,4 @@ int HDS::execute_action(string action)
 	this->transition_running = false;
 	this->hds_action = "";
 	return this->result;
-}
-
-string HDS::get_hds_action()
-{
-	return this->hds_action;
 }

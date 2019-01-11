@@ -25,14 +25,13 @@ class HDS : public FspProcess{
 private:
 	CM730Serial *cm730_serial;
 	int message_to_int(char* message);
-	darwin_string_command str_to_enum(string const& action);
+	darwin_string_command str_to_enum(string action);
 	string parse_action_value(string action);
 	string parse_servo_sensor_id(string action);
 	int next_action(string action);
 	int result;
 	string hds_action;
 	bool transition_running;
-	string get_hds_action();
 
 public:
 	/*Constructor, also gets the constructor from the super class*/
