@@ -17,6 +17,7 @@ bool RobotManager::init_system()
 	this->arm_manager = new ArmManager(this->sync_server);
 	this->leg_manager = new LegManager(this->sync_server);
 	this->sensor_manager = new SensorManager(this->sync_server);
+	printf("Initializing systems\n");
 	return true;
 }
 
@@ -29,8 +30,10 @@ bool RobotManager::start_system()
 	{
 		new boost::thread(boost::bind(&FspProcess::run, &this->processes[i]));
 	}
+	while(this->proc_count.load(memory_order_relaxed) != (int)this.processes.size()) { }
 	new boost::thread(boost::bind(&HDS::run, this->hds));
 	new boost::thread(boost::bind(&SynchronisationServer::run, this->sync_server));
+	printf("RobotManager::start_system(), waiting for threads to start\n");
 	return true;
 }
 
@@ -80,4 +83,11 @@ vector<struct ltsa_export> RobotManager::read_ltsa_exports()
 		}
 	}
 	return ltsa_exports;
+}
+
+void RobotManager::sync_start()
+{
+	this->proc_count.store(this->proc_count.load(memory_order_relaxed) + 1, memory_order_relaxed);
+	while(this->proc_count.load(memory_order_relaxed) != (int)this.processes.size()) { }
+	printf("All threads started\n");
 }

@@ -7,7 +7,8 @@ int main(void)
     RobotManager manager;
     manager.init_system();
     manager.start_system();
-    manager.arm_manager->move_left_arm_forward();
+    printf("Waiting for threads to start\n");
+    manager.leg_manager->move_left_leg_forward();
     while(1) { }
     return 0;
 }

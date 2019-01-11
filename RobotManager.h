@@ -1,6 +1,7 @@
 #ifndef ROBOT_MANAGER_H
 #define ROBOT_MANAGER_H
 
+#include <atomic.h>
 #include <stdio.h>
 #include "SynchronisationServer.h"
 #include "HDS.h"
@@ -31,9 +32,11 @@ private:
 	vector<FspProcess> processes;
 	HDS *hds;
 	SynchronisationServer *sync_server;
+	atomic<int> proc_count;
 
 	vector<string> get_alphabet(vector<string> data);
 	vector<ltsa_export> read_ltsa_exports();
+	void sync_start();
 };
 
 #endif

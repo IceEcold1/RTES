@@ -1,6 +1,7 @@
 #ifndef SYNCHRONISATION_SERVER_H
 #define SYNCHRONISATION_SERVER_H
 
+#include <atomic>
 #include <string>
 #include <iostream>
 #include <dirent.h>

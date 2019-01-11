@@ -1,18 +1,20 @@
 #include "FspProcess.h"
 
 /*Always include the initial state and full alphabet.*/
-FspProcess::FspProcess(string process_id, int state, vector<string> alphabet, vector<string> fspData)
+FspProcess::FspProcess(string process_id, int state, vector<string> alphabet, vector<string> fspData, RobotManager manager)
 {
 	this->process_id = process_id;
 	this->state = state;
 	this->alphabet = alphabet;
 	this->fspData = fspData;
+	this->manager = manager;
 	this->sensitivity_list = this->get_sensitivity_list(this->state, this->fspData);
 }
 
 /*Check if the sync server sends a signal, based on that single do something.*/
 void::FspProcess::run()
 {
+
 	while(1)
 	{
 		usleep(1000000);
@@ -123,7 +125,7 @@ bool FspProcess::alphabet_contains_action(string action)
 
 bool FspProcess::sensitivity_list_contains_action(string action)
 {
-	int size = (int)this->alphabet.size();
+	int size = (int)this->sensitivity_list.size();
 
 	for(int i = 0; i < size; i++)
 	{

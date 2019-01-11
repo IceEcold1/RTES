@@ -32,6 +32,7 @@ private:
 	int result;
 	string hds_action;
 	bool transition_running;
+	string get_hds_action();
 
 public:
 	/*Constructor, also gets the constructor from the super class*/
