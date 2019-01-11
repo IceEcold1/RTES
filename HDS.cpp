@@ -68,7 +68,7 @@ int::HDS::next_action(string action)
 				{
 					printf("Servo %s rotates to position %s.\n", servo_sensor_id.c_str(), action_value.c_str());
 				}
-				return this->cm730_serial->action(this->cm730_serial->WRITE, servo_sensor_id.erase(0, 1), 30, stoi(action_value));
+				return this->cm730_serial->action(this->cm730_serial->WRITE, stoi(servo_sensor_id.erase(0, 1).c_str()), 30, stoi(action_value.c_str())).length;
 				break;
 			case sensor_read_x:
 				if(DEBUG)
