@@ -23,12 +23,11 @@ class FspProcess {
 
 protected:
 	string process_id;
-	//atomic<int> state;
 	int state;
 	vector<string> alphabet, fspData;
 	vector<sens_list> sensitivity_list;
 	bool is_started;
-	bool get_next_state(string action);
+	int get_next_state(string action);
 public:
 	int get_cur_state();
 	bool next_action(string action);

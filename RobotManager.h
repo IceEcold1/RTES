@@ -28,7 +28,7 @@ public:
 	bool init_system();
 	bool start_system();
 private:
-	vector<FspProcess> processes;
+	vector<FspProcess*> processes;
 	HDS *hds;
 	SynchronisationServer *sync_server;
 

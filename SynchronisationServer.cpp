@@ -31,7 +31,7 @@ void SynchronisationServer::run()
 						int processes_size = (int)this->total_alphabet[i].processes.size();
 						for(int j = 0; j < processes_size; j++)
 						{
-							this->total_alphabet[i].processes[j].next_action(this->action_list[0].action);
+							this->total_alphabet[i].processes[j]->next_action(this->action_list[0].action);
 						}
 					}
 				}
@@ -62,7 +62,7 @@ bool SynchronisationServer::action_is_valid(string action)
 		{
 			for(int j = 0; j < process_size; j++)
 			{
-				if(!this->total_alphabet[i].processes[j].sensitivity_list_contains_action(this->total_alphabet[i].action))
+				if(!this->total_alphabet[i].processes[j]->sensitivity_list_contains_action(this->total_alphabet[i].action))
 					return false;
 			}
 		}
@@ -80,7 +80,7 @@ void SynchronisationServer::collect_total_alphabet()
 
 	for(int i = 0; i < processes_size; i++)
 	{
-		vector<string> alphabet = this->processes[i].get_alphabet();
+		vector<string> alphabet = this->processes[i]->get_alphabet();
 		int alphabet_size = (int)alphabet.size();
 
 		for(int j = 0; j < alphabet_size; j++)
@@ -101,7 +101,7 @@ void SynchronisationServer::collect_total_alphabet()
 	{
 		for(int j = 0; j < processes_size; j++)
 		{
-			if(this->processes[j].alphabet_contains_action(this->total_alphabet[i].action) && !this->process_vector_contains_process(this->total_alphabet[i].processes, this->processes[j]))
+			if(this->processes[j]->alphabet_contains_action(this->total_alphabet[i].action) && !this->process_vector_contains_process(this->total_alphabet[i].processes, this->processes[j]))
 				this->total_alphabet[i].processes.push_back(this->processes[j]);
 		}
 	}
@@ -132,13 +132,13 @@ bool SynchronisationServer::action_exists_in_alphabet(string action)
 /*
 * Returns wether the specified process exists in the specified process_vector
 */
-bool SynchronisationServer::process_vector_contains_process(vector<FspProcess> process_vector, FspProcess process)
+bool SynchronisationServer::process_vector_contains_process(vector<FspProcess*> process_vector, FspProcess *process)
 {
 	int size = (int)process_vector.size();
 
 	for(int i = 0; i < size; i++)
 	{
-		if(strcmp(process_vector[i].get_process_id().c_str(), process.get_process_id().c_str()) == 0)
+		if(strcmp(process_vector[i]->get_process_id().c_str(), process->get_process_id().c_str()) == 0)
 			return true;
 	}
 	return false;

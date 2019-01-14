@@ -12,7 +12,7 @@ bool RobotManager::init_system()
 	{
 		FspProcess *process = new FspProcess(ltsa_data[i].process_id, init_state, this->get_alphabet(ltsa_data[i].fsp_data), ltsa_data[i].fsp_data);
 		this->processes.push_back(process);
-		this->sync_server->processes.push_back(*process);
+		this->sync_server->processes.push_back(process);
 	}
 	this->arm_manager = new ArmManager(this->sync_server);
 	this->leg_manager = new LegManager(this->sync_server);
@@ -28,8 +28,8 @@ bool RobotManager::start_system()
 {
 	for(int i = 0; i < (int)this->processes.size(); i++)
 	{
-		new boost::thread(boost::bind(&FspProcess::run, &this->processes[i]));
-		while(this->processes[i].get_started_bool() != true) {};
+		new boost::thread(boost::bind(&FspProcess::run, this->processes[i]));
+		while(this->processes[i]->get_started_bool() != true) {};
 	}
 	
 	new boost::thread(boost::bind(&HDS::run, this->hds));
