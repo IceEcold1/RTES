@@ -14,7 +14,6 @@ FspProcess::FspProcess(string process_id, int state, vector<string> alphabet, ve
 /*Check if the sync server sends a signal, based on that single do something.*/
 void::FspProcess::run()
 {
-
 	while(1)
 	{
 		usleep(1000000);
