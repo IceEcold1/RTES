@@ -23,7 +23,7 @@ enum manager_id {
 
 struct alphabet_process {
 	string action;
-	vector<FspProcess> processes;
+	vector<FspProcess*> processes;
 };
 
 struct manager_command {
@@ -48,7 +48,7 @@ private:
 
 public:
 	SynchronisationServer(HDS *hds);
-	vector<FspProcess> processes;
+	vector<FspProcess*> processes;
 	void run();
 	void give_action(manager_command input);
 	manager_command get_result(manager_command id);

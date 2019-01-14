@@ -4,7 +4,7 @@
 FspProcess::FspProcess(string process_id, int state, vector<string> alphabet, vector<string> fspData)
 {
 	this->process_id = process_id;
-	this->state.store(state, memory_order_relaxed);
+	this->state = state;
 	this->alphabet = alphabet;
 	this->fspData = fspData;
 	this->sensitivity_list = this->get_sensitivity_list(state, this->fspData);
@@ -20,14 +20,14 @@ void::FspProcess::run()
 	while(1)
 	{
 		usleep(1000000);
-		printf("Process: '%s', state = %d\n", this->process_id.c_str(), this->state.load(memory_order_relaxed));
+		printf("Process: '%s', state = %d\n", this->process_id.c_str(), this->state);
 	}
 }
 
 /*Gets the current state which the actions will be based on.*/
 int::FspProcess::get_cur_state()
 {
-	return this->state.load(memory_order_relaxed);
+	return this->state;
 }
 
 /*Do a next action, check if it's in the alphabet, update state*/
@@ -43,8 +43,8 @@ bool::FspProcess::next_action(string action)
 		if(next_state != -1)
 		{
 			printf("FspProcess: '%s', action %s found in sensitivity list\n", this->process_id.c_str(), action.c_str());
-			this->state.store(next_state, memory_order_relaxed); /*New state*/
-			this->sensitivity_list = this->get_sensitivity_list(this->state.load(memory_order_relaxed), this->fspData);
+			this->state = next_state; /*New state*/
+			this->sensitivity_list = this->get_sensitivity_list(this->state, this->fspData);
 			// hier de sens_list setten in de sync server
 			return true;
 		}

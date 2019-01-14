@@ -11,7 +11,7 @@ bool RobotManager::init_system()
 	for(int i = 0; i < size; i++)
 	{
 		FspProcess *process = new FspProcess(ltsa_data[i].process_id, init_state, this->get_alphabet(ltsa_data[i].fsp_data), ltsa_data[i].fsp_data);
-		this->processes.push_back(*process);
+		this->processes.push_back(process);
 		this->sync_server->processes.push_back(*process);
 	}
 	this->arm_manager = new ArmManager(this->sync_server);
