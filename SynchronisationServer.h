@@ -30,6 +30,7 @@ struct manager_command {
 	manager_id identifier;
 	string action;
 	bool resolved;
+	bool successful;
 	int return_value;
 };
 

@@ -20,19 +20,16 @@ void SynchronisationServer::run()
 		size.store((int)this->action_list.size(), memory_order_relaxed);
 		if(size.load(memory_order_relaxed) > 0)
 		{
-			if(this->action_exists_in_alphabet(this->action_list[0].action) && action_is_valid(this->action_list[0].action))
+			if(this->action_exists_in_alphabet(this->action_list[0].action) && action_is_valid(this->action_list[0].action) && !this->action_list[0].resolved)
 			{
-				printf("Dit stuurd de sync_server :DDD: '%s'\n", this->action_list[0].action.c_str());
 				this->hds->execute_action(this->action_list[0].action);
-				printf("SynchronisationServer::execute_action werkt\n");
-				this->action_list.erase(this->action_list.begin());
-				printf("SynchronisationServer::erase werkt\n");
+				this->action_list[0].resolved = true;
+				this->action_list[0].successful = true;
 			}
 			else
 			{
-				//current_action.resolved = false;
-				//this->completed_action_list.push_back(current_action);
-				this->action_list.erase(this->action_list.begin());
+				this->action_list[0].resolved = true;
+				this->action_list[0].successful = false;
 			}
 		}
 	}
@@ -97,13 +94,13 @@ void SynchronisationServer::collect_total_alphabet()
 		}
 	}
 
-	for(int i = 0; i < (int)this->total_alphabet.size(); i++)
+	/*for(int i = 0; i < (int)this->total_alphabet.size(); i++)
 	{
 		for(int j = 0; j < (int)this->total_alphabet[i].processes.size(); j++)
 		{
 			printf("action[%d]: '%s', process[%d]: '%s'\n", i, this->total_alphabet[i].action.c_str(), j, this->total_alphabet[i].processes[j].get_process_id().c_str());
 		}
-	}
+	}*/
 }
 
 /*

@@ -29,8 +29,9 @@ bool RobotManager::start_system()
 	for(int i = 0; i < (int)this->processes.size(); i++)
 	{
 		new boost::thread(boost::bind(&FspProcess::run, &this->processes[i]));
+		while(this->processes[i].get_started_bool() != true) {};
 	}
-	while(this->proc_count.load(memory_order_relaxed) != (int)this.processes.size()) { }
+	
 	new boost::thread(boost::bind(&HDS::run, this->hds));
 	new boost::thread(boost::bind(&SynchronisationServer::run, this->sync_server));
 	printf("RobotManager::start_system(), waiting for threads to start\n");
@@ -83,11 +84,4 @@ vector<struct ltsa_export> RobotManager::read_ltsa_exports()
 		}
 	}
 	return ltsa_exports;
-}
-
-void RobotManager::sync_start()
-{
-	this->proc_count.store(this->proc_count.load(memory_order_relaxed) + 1, memory_order_relaxed);
-	while(this->proc_count.load(memory_order_relaxed) != (int)this.processes.size()) { }
-	printf("All threads started\n");
 }

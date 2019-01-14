@@ -25,7 +25,7 @@ protected:
 	int state;
 	vector<string> alphabet, fspData;
 	vector<sens_list> sensitivity_list;
-
+	bool is_started;
 	bool get_next_state(string action);
 public:
 	int get_cur_state();
@@ -37,6 +37,7 @@ public:
 	string get_process_id();
 	bool alphabet_contains_action(string action);
 	bool sensitivity_list_contains_action(string action);
+	bool get_started_bool();
 };
 
 #endif

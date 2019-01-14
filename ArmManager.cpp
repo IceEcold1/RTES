@@ -11,9 +11,16 @@ bool ArmManager::move_left_arm_forward()
 
 	cmd.identifier = (manager_id)arm_manager;
 	cmd.action = "move_left_arm.forward";
+	cmd.resolved = false;
 	
 	this->sync_server->give_action(cmd);
-	printf("ArmManager::move_left_arm_forward()\n");
+
+	while(!cmd.resolved)
+		cmd = this->sync_server->get_result(cmd);
+	if(cmd.successful)
+		printf("ArmManager::move_left_arm_forward(), successfull\n");
+	else
+		printf("ArmManager::move_left_arm_forward(), NOT successfull\n");
 	return true;
 }
 
