@@ -1,6 +1,7 @@
 #ifndef PROCESS_H
 #define PROCESS_H
 
+#include <atomic>
 #include <string>
 #include <stdio.h>
 #include <vector>
@@ -22,7 +23,7 @@ class FspProcess {
 
 protected:
 	string process_id;
-	int state;
+	atomic<int> state;
 	vector<string> alphabet, fspData;
 	vector<sens_list> sensitivity_list;
 	bool is_started;

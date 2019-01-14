@@ -4,10 +4,10 @@
 FspProcess::FspProcess(string process_id, int state, vector<string> alphabet, vector<string> fspData)
 {
 	this->process_id = process_id;
-	this->state = state;
+	this->state.store(state, memory_order_relaxed);
 	this->alphabet = alphabet;
 	this->fspData = fspData;
-	this->sensitivity_list = this->get_sensitivity_list(this->state, this->fspData);
+	this->sensitivity_list = this->get_sensitivity_list(state, this->fspData);
 
 	/*standard values*/
 	this->is_started = false;
@@ -20,14 +20,14 @@ void::FspProcess::run()
 	while(1)
 	{
 		usleep(1000000);
-		printf("Process: '%s', state = %d\n", this->process_id.c_str(), this->state);
+		printf("Process: '%s', state = %d\n", this->process_id.c_str(), this->state.load(memory_order_relaxed));
 	}
 }
 
 /*Gets the current state which the actions will be based on.*/
 int::FspProcess::get_cur_state()
 {
-	return this->state;
+	return this->state.load(memory_order_relaxed);
 }
 
 /*Do a next action, check if it's in the alphabet, update state*/
@@ -37,14 +37,14 @@ bool::FspProcess::next_action(string action)
 	/*Check if the element exists in the alphabet*/
 	if(find(this->alphabet.begin(), this->alphabet.end(), action) != this->alphabet.end())
 	{
-		printf("Action %s found in alphabet", action.c_str());
+		printf("FspProcess: '%s', action %s found in alphabet\n", this->process_id.c_str(), action.c_str());
 		/*Also check if this action is possible based on the current state, actions based on states are found in the sensitivity list*/
 		int next_state = this->get_next_state(action);
 		if(next_state != -1)
 		{
-			printf("Action %s found in sensitivity list", action.c_str());
-			this->state = next_state; /*New state*/
-			this->sensitivity_list = this->get_sensitivity_list(this->state, this->fspData);
+			printf("FspProcess: '%s', action %s found in sensitivity list\n", this->process_id.c_str(), action.c_str());
+			this->state.store(next_state, memory_order_relaxed); /*New state*/
+			this->sensitivity_list = this->get_sensitivity_list(this->state.load(memory_order_relaxed), this->fspData);
 			// hier de sens_list setten in de sync server
 			return true;
 		}

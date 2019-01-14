@@ -23,10 +23,22 @@ void SynchronisationServer::run()
 			if(this->action_exists_in_alphabet(this->action_list[0].action) && action_is_valid(this->action_list[0].action) && !this->action_list[0].resolved)
 			{
 				this->hds->execute_action(this->action_list[0].action);
+				int total_alphabet_size = (int)this->total_alphabet.size();
+				for(int i = 0; i < total_alphabet_size; i++)
+				{
+					if(strcmp(this->action_list[0].action.c_str(), this->total_alphabet[i].action.c_str()) == 0)
+					{
+						int processes_size = (int)this->total_alphabet[i].processes.size();
+						for(int j = 0; j < processes_size; j++)
+						{
+							this->total_alphabet[i].processes[j].next_action(this->action_list[0].action);
+						}
+					}
+				}
 				this->action_list[0].resolved = true;
 				this->action_list[0].successful = true;
 			}
-			else
+			else if(!this->action_list[0].resolved)
 			{
 				this->action_list[0].resolved = true;
 				this->action_list[0].successful = false;
@@ -154,7 +166,8 @@ manager_command SynchronisationServer::get_result(manager_command id)
 		if (this->action_list[i].identifier == id.identifier)
 		{
 			return_value = this->action_list[i];
-			this->action_list.erase(this->action_list.begin()+i);
+			if(return_value.resolved)
+				this->action_list.erase(this->action_list.begin()+i);
 			return return_value;
 		}
 	}
