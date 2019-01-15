@@ -31,7 +31,7 @@ bool RobotManager::start_system()
 		new boost::thread(boost::bind(&FspProcess::run, this->processes[i]));
 		while(this->processes[i]->get_started_bool() != true) {};
 	}
-	
+	usleep(100);
 	new boost::thread(boost::bind(&HDS::run, this->hds));
 	new boost::thread(boost::bind(&SynchronisationServer::run, this->sync_server));
 	printf("RobotManager::Threads succesfully started.\n");

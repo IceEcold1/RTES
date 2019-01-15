@@ -8,7 +8,9 @@ ArmManager::ArmManager(SynchronisationServer *sync_server)
 bool ArmManager::move_left_arm_forward()
 {
 	this->command_function->resolve_command("move_left_arm.forward");
+    printf("\n");
 	this->command_function->resolve_command("s2.rotate_servo.1300");
+	printf("\n");
 	this->command_function->resolve_command("s6.rotate_servo.2100");
 	return true;
 }

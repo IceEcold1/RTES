@@ -12,12 +12,16 @@ int main(void)
     RobotManager manager;
     manager.init_system();
     manager.start_system();
-
     manager.leg_manager->move_right_leg_forward();
+    
     manager.arm_manager->move_left_arm_forward();
-
+    
     manager.sensor_manager->get_gyro_data();
+    
     manager.sensor_manager->get_accelero_data();
+
+    
+
     while(1) { }
     return 0;
 }

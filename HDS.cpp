@@ -38,6 +38,7 @@ void::HDS::run()
 int::HDS::next_action(string action)
 {
 	int address = 0;
+	int sensor_value = 0;
 	darwin_string_command label = this->str_to_enum(action);
 	string servo_sensor_id, action_value;
 
@@ -67,7 +68,7 @@ int::HDS::next_action(string action)
 			if(strcmp(action_value.c_str(), "NO_MATCHES_FOUND") == 0)
 				return -1;
 			printf("HDS::(%s) gets the %s (x) axis.\n", servo_sensor_id.c_str(), action_value.c_str());
-			if(strcmp(servo_sensor_id.c_str(), "gyro") == 0)
+			if(strcmp(servo_sensor_id.c_str(), "accelero") == 0)
 			{
 				address = 42;
 			}
@@ -75,14 +76,16 @@ int::HDS::next_action(string action)
 			{
 				address = 44;
 			}
-			return this->cm730_serial->action(this->cm730_serial->READ_PAIR, 200, address).message;
+			sensor_value = this->cm730_serial->action(this->cm730_serial->READ_PAIR, 200, address).message;
+			printf("HDS::Sensor return value is: (%d).\n", sensor_value);
+			return sensor_value;
 		break;
 		/*======================================================================*/
 		case sensor_read_y:
 			if(strcmp(action_value.c_str(), "NO_MATCHES_FOUND") == 0)
 					return -1;
 			printf("HDS::(%s) gets the %s (y) axis.\n", servo_sensor_id.c_str(), action_value.c_str());
-			if(strcmp(servo_sensor_id.c_str(), "gyro") == 0)
+			if(strcmp(servo_sensor_id.c_str(), "accelero") == 0)
 			{
 				address = 40;
 			}
@@ -90,14 +93,16 @@ int::HDS::next_action(string action)
 			{
 				address = 46;
 			}
-			return this->cm730_serial->action(this->cm730_serial->READ_PAIR, 200, address).message;
+			sensor_value = this->cm730_serial->action(this->cm730_serial->READ_PAIR, 200, address).message;
+			printf("HDS::Sensor return value is: (%d).\n", sensor_value);
+			return sensor_value;
 		break;
 		/*======================================================================*/
 		case sensor_read_z:
 			if(strcmp(action_value.c_str(), "NO_MATCHES_FOUND") == 0)
 				return -1;
 			printf("HDS::(%s) gets the %s (z) axis.\n", servo_sensor_id.c_str(), action_value.c_str());
-			if(strcmp(servo_sensor_id.c_str(), "gyro") == 0)
+			if(strcmp(servo_sensor_id.c_str(), "accelero") == 0)
 			{
 				address = 38;
 			}
@@ -105,7 +110,9 @@ int::HDS::next_action(string action)
 			{
 				address = 48;
 			}
-			return this->cm730_serial->action(this->cm730_serial->READ_PAIR, 200, address).message;
+			sensor_value = this->cm730_serial->action(this->cm730_serial->READ_PAIR, 200, address).message;
+			printf("HDS::Sensor return value is: (%d).\n", sensor_value);
+			return sensor_value;
 		break;
 		/*======================================================================*/
 		default:

@@ -19,8 +19,8 @@ void::FspProcess::run()
 	this->is_started = true;
 	while(1)
 	{
-		usleep(1000000);
 		printf("FspProcess::(%s), state = %d.\n", this->process_id.c_str(), this->state);
+		usleep(1000000);
 	}
 }
 

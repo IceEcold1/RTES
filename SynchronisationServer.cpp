@@ -40,6 +40,7 @@ void SynchronisationServer::run()
 							}
 						}
 					}
+					this->action_list[0].return_value = hds_result;
 					this->action_list[0].resolved = true;
 					this->action_list[0].successful = true;
 				}

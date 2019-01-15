@@ -32,9 +32,9 @@ CM730Serial::CM730Serial() {
 
 
 void CM730Serial::lock_torque() {
-	this->action(WRITE_PAIR, 254, 24, 1);
+	this->action(WRITE, 254, 24, 1);
 	usleep(100000);
-	this->action(WRITE_PAIR, 254, 24, 1);
+	this->action(WRITE, 254, 24, 1);
 }
 
 CM730Serial::Response CM730Serial::action(Actions action, int id, int address, int value) {
@@ -45,6 +45,8 @@ CM730Serial::Response CM730Serial::action(Actions action, int id, int address, i
 
 	instruction_packet[ID]			= (unsigned char)id;
 	instruction_packet[ADDRESS]		= (unsigned char)address;
+
+	tcflush(this->USB, TCIFLUSH);
 
 	Response response;
 
@@ -64,6 +66,8 @@ CM730Serial::Response CM730Serial::action(Actions action, int id, int address, i
 			instruction_packet[DATA_LENGTH + 1] = this->getChecksum(instruction_packet);
 
 			response = this->Read(instruction_packet, 8);
+
+			printf("Response: %d\n", response.message);
 			break;
 		case WRITE:
 			instruction_packet[LENGTH]			= (unsigned char)SINGLE_ARGUMENT_LENGTH;
