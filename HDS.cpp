@@ -18,7 +18,7 @@ void::HDS::run()
 	/*Init device driver class*/
 	this->cm730_serial = new CM730Serial();
 	/*Arm servo's so they can be used*/
-	this->cm730_serial->action(this->cm730_serial->WRITE, 256, 24, 1);
+	this->cm730_serial->lock_torque();
 	while(1)
 	{
 		usleep(200);
@@ -75,7 +75,7 @@ int::HDS::next_action(string action)
 			{
 				address = 44;
 			}
-			return this->message_to_int(this->cm730_serial->action(this->cm730_serial->READ_PAIR, 200, address).message);
+			return this->cm730_serial->action(this->cm730_serial->READ_PAIR, 200, address).message;
 		break;
 		/*======================================================================*/
 		case sensor_read_y:
@@ -90,7 +90,7 @@ int::HDS::next_action(string action)
 			{
 				address = 46;
 			}
-			return this->message_to_int(this->cm730_serial->action(this->cm730_serial->READ_PAIR, 200, address).message);
+			return this->cm730_serial->action(this->cm730_serial->READ_PAIR, 200, address).message;
 		break;
 		/*======================================================================*/
 		case sensor_read_z:
@@ -105,7 +105,7 @@ int::HDS::next_action(string action)
 			{
 				address = 48;
 			}
-			return this->message_to_int(this->cm730_serial->action(this->cm730_serial->READ_PAIR, 200, address).message);
+			return this->cm730_serial->action(this->cm730_serial->READ_PAIR, 200, address).message;
 		break;
 		/*======================================================================*/
 		default:
@@ -114,11 +114,6 @@ int::HDS::next_action(string action)
 		break;
 	}
 	return -1;
-}
-
-int::HDS::message_to_int(char* message)
-{
-	return atoi(message);
 }
 
 /*Generate enum based on string value for switch statement in C++*/

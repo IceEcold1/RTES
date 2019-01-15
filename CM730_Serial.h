@@ -7,54 +7,61 @@
 #include <termios.h> 
 #include <stdio.h>
 #include <sys/ioctl.h>
-#include <string.h>
 
 class CM730Serial
 {
 	public:
 		CM730Serial(); 
-
-		enum enum_methods {
+		
+		typedef enum {
 			READ,
-			WRITE_PAIR,
-			WRITE
-		};
+			READ_PAIR,
+			WRITE,
+			WRITE_PAIR
+		} Actions;
+
+		typedef struct {
+			int 	length;
+			int 	message;
+		} Response;
 
 		/* Initialise variables used for read and write*/
-		int READ_LENGTH 		= 4;
-		int READ_ACTION 		= 2;
-		int READ_VALUE			= 2;
+		static const int READ_LENGTH 		= 4;
+		static const int READ_INSTRUCTION	= 2;
+		static const int READ_VALUE			= 2;
 		
-		int WRITE_LENGTH		= 5;
-		int WRITE_ACTION		= 3;
-		
-		struct sub_cont_response{
-			int length;
-			char message[100];
-		};
+		static const int WRITE_LENGTH		= 4;
+		static const int WRITE_INSTRUCTION	= 3;
 
-		sub_cont_response action(enum_methods method, int id, int address, int value = -1);
+		static const int SINGLE_ARGUMENT_LENGTH = 4; // adres + arguments + 2;
+		static const int DOUBLE_ARGUMENT_LENGTH = 5;
+
+		static const int WRITE_PAIR_LENGTH	= 5;
+
+		Response action(Actions method, int id, int address, int value = -1);
+		void lock_torque();
 		
-	private:
-		/* Package indexes */
-		enum packet_items {
+	private:                          
+		enum PacketItem {
 			ID 			= 2,
 			LENGTH		= 3,
-			ACTION 		= 4,
+			INSTRUCTION	= 4,
 			ADDRESS 	= 5,
 			VALUE 		= 6,
+			DATA_LENGTH	= 6,
 			LOWBYTE 	= 6,
 			HIGHBYTE 	= 7
 		};
 
-		int write_cm730(unsigned char* packet, int value, int length);
-		int write_pair_cm730(unsigned char* packet, int value, int length);
-		sub_cont_response read_cm730(unsigned char* packet, int length);
-
-		unsigned char get_checksum(unsigned char* packet);
+		Response Read(unsigned char* packet, int packet_length);
+		unsigned char getChecksum(unsigned char* packet);
 	
-		/* File Descriptor waarnaar geschreven moet wroden */
 		int USB;
+		
+		struct termios tty;
+		struct serial_struct serinfo;
+	
+		
 };
 
 #endif

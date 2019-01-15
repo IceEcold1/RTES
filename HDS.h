@@ -25,7 +25,6 @@ enum darwin_string_command{
 class HDS : public FspProcess{
 private:
 	CM730Serial *cm730_serial;
-	int message_to_int(char* message);
 	darwin_string_command str_to_enum(string action);
 	void parse_action_value(string action, string &action_value);
 	void parse_servo_sensor_id(string action, string &servo_sensor_id);
