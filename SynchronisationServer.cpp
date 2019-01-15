@@ -14,29 +14,40 @@ SynchronisationServer::SynchronisationServer(HDS *hds)
 void SynchronisationServer::run()
 {
 	atomic<int> size;
+	int hds_result;
 	this->collect_total_alphabet();
 	while(1)
 	{
+		hds_result = 0;
 		size.store((int)this->action_list.size(), memory_order_relaxed);
 		if(size.load(memory_order_relaxed) > 0)
 		{
 			if(this->action_exists_in_alphabet(this->action_list[0].action) && action_is_valid(this->action_list[0].action) && !this->action_list[0].resolved)
 			{
-				this->hds->execute_action(this->action_list[0].action);
-				int total_alphabet_size = (int)this->total_alphabet.size();
-				for(int i = 0; i < total_alphabet_size; i++)
+				hds_result = this->hds->execute_action(this->action_list[0].action);
+
+				if(hds_result != -1)
 				{
-					if(strcmp(this->action_list[0].action.c_str(), this->total_alphabet[i].action.c_str()) == 0)
+					int total_alphabet_size = (int)this->total_alphabet.size();
+					for(int i = 0; i < total_alphabet_size; i++)
 					{
-						int processes_size = (int)this->total_alphabet[i].processes.size();
-						for(int j = 0; j < processes_size; j++)
+						if(strcmp(this->action_list[0].action.c_str(), this->total_alphabet[i].action.c_str()) == 0)
 						{
-							this->total_alphabet[i].processes[j]->next_action(this->action_list[0].action);
+							int processes_size = (int)this->total_alphabet[i].processes.size();
+							for(int j = 0; j < processes_size; j++)
+							{
+								this->total_alphabet[i].processes[j]->next_action(this->action_list[0].action);
+							}
 						}
 					}
+					this->action_list[0].resolved = true;
+					this->action_list[0].successful = true;
 				}
-				this->action_list[0].resolved = true;
-				this->action_list[0].successful = true;
+				else
+				{
+					this->action_list[0].resolved = false;
+					this->action_list[0].successful = false;
+				}
 			}
 			else if(!this->action_list[0].resolved)
 			{

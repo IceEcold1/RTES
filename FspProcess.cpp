@@ -20,7 +20,7 @@ void::FspProcess::run()
 	while(1)
 	{
 		usleep(1000000);
-		printf("Process: '%s', state = %d\n", this->process_id.c_str(), this->state);
+		printf("FspProcess::(%s), state = %d.\n", this->process_id.c_str(), this->state);
 	}
 }
 
@@ -37,12 +37,12 @@ bool::FspProcess::next_action(string action)
 	/*Check if the element exists in the alphabet*/
 	if(find(this->alphabet.begin(), this->alphabet.end(), action) != this->alphabet.end())
 	{
-		printf("FspProcess: '%s', action %s found in alphabet\n", this->process_id.c_str(), action.c_str());
+		printf("FspProcess::(%s), action (%s) found in alphabet.\n", this->process_id.c_str(), action.c_str());
 		/*Also check if this action is possible based on the current state, actions based on states are found in the sensitivity list*/
 		int next_state = this->get_next_state(action);
 		if(next_state != -1)
 		{
-			printf("FspProcess: '%s', action %s found in sensitivity list\n", this->process_id.c_str(), action.c_str());
+			printf("FspProcess::(%s), action (%s) found in sensitivity list.\n", this->process_id.c_str(), action.c_str());
 			this->state = next_state; /*New state*/
 			this->sensitivity_list = this->get_sensitivity_list(this->state, this->fspData);
 			// hier de sens_list setten in de sync server

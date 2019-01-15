@@ -2,25 +2,14 @@
 
 ArmManager::ArmManager(SynchronisationServer *sync_server)
 {
-	this->sync_server = sync_server;
+	this->command_function = new CommandFunction(sync_server, (manager_id)arm_manager);
 }
 
 bool ArmManager::move_left_arm_forward()
 {
-	manager_command cmd;
-
-	cmd.identifier = (manager_id)arm_manager;
-	cmd.action = "move_left_arm.forward";
-	cmd.resolved = false;
-	
-	this->sync_server->give_action(cmd);
-
-	while(!cmd.resolved)
-		cmd = this->sync_server->get_result(cmd);
-	if(cmd.successful)
-		printf("ArmManager::move_left_arm_forward(), successfull\n");
-	else
-		printf("ArmManager::move_left_arm_forward(), NOT successfull\n");
+	this->command_function->resolve_command("move_left_arm.forward");
+	this->command_function->resolve_command("s2.rotate_servo.1300");
+	this->command_function->resolve_command("s6.rotate_servo.2100");
 	return true;
 }
 

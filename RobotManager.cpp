@@ -4,7 +4,7 @@ bool RobotManager::init_system()
 {
 	vector<struct ltsa_export> ltsa_data = this->read_ltsa_exports();
 	int size = (int)ltsa_data.size(), init_state = 0;
-
+	printf("RobotManager::Initializing systems\n");
 	/*HDS constructor must create base class FspProcess first, since HDS has no sens list, send an empty vector*/
 	this->hds = new HDS("HDS", init_state, this->get_alphabet(ltsa_data[0].fsp_data), vector<string>());
 	this->sync_server = new SynchronisationServer(this->hds);
@@ -17,7 +17,6 @@ bool RobotManager::init_system()
 	this->arm_manager = new ArmManager(this->sync_server);
 	this->leg_manager = new LegManager(this->sync_server);
 	this->sensor_manager = new SensorManager(this->sync_server);
-	printf("Initializing systems\n");
 	return true;
 }
 
@@ -26,6 +25,7 @@ bool RobotManager::init_system()
  */
 bool RobotManager::start_system()
 {
+	printf("RobotManager::Starting threads.\n");
 	for(int i = 0; i < (int)this->processes.size(); i++)
 	{
 		new boost::thread(boost::bind(&FspProcess::run, this->processes[i]));
@@ -34,7 +34,7 @@ bool RobotManager::start_system()
 	
 	new boost::thread(boost::bind(&HDS::run, this->hds));
 	new boost::thread(boost::bind(&SynchronisationServer::run, this->sync_server));
-	printf("RobotManager::start_system(), waiting for threads to start\n");
+	printf("RobotManager::Threads succesfully started.\n");
 	return true;
 }
 

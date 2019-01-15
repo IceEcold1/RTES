@@ -2,10 +2,12 @@
 #define LEG_MANAGER_H
 
 #include "SynchronisationServer.h"
+#include "CommandFunction.h"
 
 class LegManager {
 private:
 	SynchronisationServer *sync_server;
+	CommandFunction *command_function;
 public:
 	LegManager(SynchronisationServer *sync_server);
 	bool move_left_leg_forward();
