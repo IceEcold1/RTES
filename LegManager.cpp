@@ -13,15 +13,18 @@ bool LegManager::move_left_leg_forward()
 
 bool LegManager::move_left_leg_backward()
 {
+	this->command_function->resolve_command("move_left_leg.backward");
 	return true;
 }
 
 bool LegManager::move_right_leg_forward()
 {
+	this->command_function->resolve_command("move_right_leg.forward");
 	return true;
 }
 
 bool LegManager::move_right_leg_backward()
 {
+	this->command_function->resolve_command("move_right_leg.backward");
 	return true;
 }

@@ -15,15 +15,19 @@ bool ArmManager::move_left_arm_forward()
 
 bool ArmManager::move_left_arm_backward()
 {
+	this->command_function->resolve_command("move_left_arm.backward");
 	return true;
 }
 
 bool ArmManager::move_right_arm_forward()
 {
+	this->command_function->resolve_command("move_right_arm.forward");
 	return true;
+
 }
 
 bool ArmManager::move_right_arm_backward()
 {
+	this->command_function->resolve_command("move_right_arm.backward");
 	return true;
 }
