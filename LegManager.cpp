@@ -8,7 +8,6 @@ LegManager::LegManager(SynchronisationServer *sync_server)
 bool LegManager::move_left_leg_forward()
 {
 	this->command_function->resolve_command("move_left_leg.forward");
-	this->command_function->resolve_command("s12.rotate_servo.3192");
 	return true;
 }
 
