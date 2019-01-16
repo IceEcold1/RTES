@@ -1,15 +1,17 @@
 #include "FspProcess.h"
 
 /*Always include the initial state and full alphabet.*/
-FspProcess::FspProcess(string process_id, int state, vector<string> alphabet, vector<string> fspData)
+FspProcess::FspProcess(string process_id, int state, vector<string> alphabet, vector<string> fspData, SynchronisationServer *sync_server)
 {
 	this->process_id = process_id;
 	this->state = state;
 	this->alphabet = alphabet;
 	this->fspData = fspData;
-	this->sensitivity_list = this->get_sensitivity_list(state, this->fspData);
+	this->sync_server = sync_server;
+	this->sensitivity_list = this->compose_sensitivity_list(state, this->fspData);
 
 	/*standard values*/
+	this->fsp_action = "NO_ACTION_SET";
 	this->is_started = false;
 }
 
@@ -19,8 +21,11 @@ void::FspProcess::run()
 	this->is_started = true;
 	while(1)
 	{
-		printf("FspProcess::(%s), state = %d.\n", this->process_id.c_str(), this->state);
-		usleep(1000000);
+		if(strcmp(this->fsp_action.c_str(), "NO_ACTION_SET") != 0)
+		{
+			this->next_action(this->fsp_action);
+			this->fsp_action = "NO_ACTION_SET";
+		}
 	}
 }
 
@@ -44,8 +49,7 @@ bool::FspProcess::next_action(string action)
 		{
 			printf("FspProcess::(%s), action (%s) found in sensitivity list.\n", this->process_id.c_str(), action.c_str());
 			this->state = next_state; /*New state*/
-			this->sensitivity_list = this->get_sensitivity_list(this->state, this->fspData);
-			// hier de sens_list setten in de sync server
+			this->sensitivity_list = this->compose_sensitivity_list(this->state, this->fspData);
 			return true;
 		}
 		else
@@ -59,7 +63,7 @@ bool::FspProcess::next_action(string action)
 	}
 }
 
-vector<sens_list> FspProcess::get_sensitivity_list(int state, vector<string> data)
+vector<sens_list> FspProcess::compose_sensitivity_list(int state, vector<string> data)
 {
 	POSIX::Regex re;
 	POSIX::Match m;
@@ -137,6 +141,17 @@ bool FspProcess::sensitivity_list_contains_action(string action)
 	return false;
 }
 
-bool FspProcess::get_started_bool(){
+bool FspProcess::get_started_bool()
+{
 	return this->is_started;
+}
+
+void FspProcess::execute_action(string action)
+{
+	this->fsp_action = action;
+}
+
+vector<sens_list> FspProcess::get_sensitivity_list()
+{
+	return this->sensitivity_list;
 }

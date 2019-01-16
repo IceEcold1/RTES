@@ -19,10 +19,15 @@ void SynchronisationServer::run()
 	while(1)
 	{
 		hds_result = 0;
-		size.store((int)this->action_list.size(), memory_order_relaxed);
+		size.store((int)this->processes.size(), memory_order_relaxed);
 		if(size.load(memory_order_relaxed) > 0)
 		{
-			if(action_is_valid(this->action_list[0].action) && !this->action_list[0].resolved)
+			vector<sens_list> sensitivity_list = this->processes[0]->get_sensitivity_list();
+			if(this->action_is_valid(sensitivity_list[0]))
+			{
+				this->execute_actions();
+			}
+			/*if(action_is_valid(this->action_list[0].action) && !this->action_list[0].resolved)
 			{
 				hds_result = this->hds->execute_action(this->action_list[0].action);
 
@@ -54,7 +59,7 @@ void SynchronisationServer::run()
 			{
 				this->action_list[0].resolved = true;
 				this->action_list[0].successful = false;
-			}
+			}*/
 		}
 	}
 }
@@ -67,20 +72,25 @@ bool SynchronisationServer::action_is_valid(string action)
 	int size = (int)this->total_alphabet.size();
 	int process_size = 0;
 	int i;
+
+	if(size == 0)
+		return false;
 	for(i = 0; i < size; i++)
 	{
 		if(strcmp(this->total_alphabet[i].action.c_str(), action.c_str()) == 0)
 		{
-			int process_size = (int)this->total_alphabet[i].processes.size();
+			process_size = (int)this->total_alphabet[i].processes.size();
 			break;
 		}
+		else if(i == size - 1)
+			return false;
 	}
 	for(int j = 0; j < process_size; j++)
 	{
-		if(this->total_alphabet[i].processes[j]->sensitivity_list_contains_action(this->total_alphabet[i].action))
-			return true;
+		if(!this->total_alphabet[i].processes[j]->sensitivity_list_contains_action(this->total_alphabet[i].action))
+			return false;
 	}
-	return false;
+	return true;
 }
 
 /*
@@ -121,6 +131,20 @@ void SynchronisationServer::collect_total_alphabet()
 }
 
 /*
+* Returns wether the specified action contains in the locally defubed 'total_alphabet' vector
+*/
+bool SynchronisationServer::action_exists_in_alphabet(string action)
+{
+	int size = (int)this->total_alphabet.size();
+	for(int i = 0; i < size; i++)
+	{
+		if(strcmp(this->total_alphabet[i].action.c_str(), action.c_str()) == 0)
+			return true;
+	}
+	return false;
+}
+
+/*
 * Returns wether the specified process exists in the specified process_vector
 */
 bool SynchronisationServer::process_vector_contains_process(vector<FspProcess*> process_vector, FspProcess *process)
@@ -135,34 +159,23 @@ bool SynchronisationServer::process_vector_contains_process(vector<FspProcess*> 
 	return false;
 }
 
-/*
-* Public function to add a command to the FIFO-buffer
-*/
-void SynchronisationServer::give_action(manager_command input)
+void SynchronisationServer::add_process(FspProcess *process)
 {
-	this->action_list.push_back(input);
+	this->processes.push_back(process);
 }
 
-/*
-* Returns the result of an action
-* Checks if the identifier of the action in the FIFO is equal to the identifier in the specified manager_command (struct)
-*/
-manager_command SynchronisationServer::get_result(manager_command id)
+void SynchronisationServer::execute_actions(string action)
 {
-	int size = (int)this->action_list.size();
-	manager_command return_value;
+	int total_alphabet_size = (int)this->total_alphabet.size();
 
-	for(int i = 0; i < size; i++)
+	for(int i = 0; i < total_alphabet_size; i++)
 	{
-		if (this->action_list[i].identifier == id.identifier)
+		if(strcmp(this->total_alphabet[i].action.c_str(), action.c_str()) == 0)
 		{
-			return_value = this->action_list[i];
-			if(return_value.resolved)
-				this->action_list.erase(this->action_list.begin()+i);
-			return return_value;
+			int process_size = (int)this->total_alphabet[i].processes.size();
+
+			for(int j = 0; j < process_size; j++)
+				this->total_alphabet[i].processes[j]->execute_action(action);
 		}
 	}
-	
-	return_value.identifier = (manager_id)unknown;
-	return return_value;
 }

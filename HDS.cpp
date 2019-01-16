@@ -2,7 +2,7 @@
 
 
 /*In C++ constructors of derived classes can only be called after the base class constructor is finished, and must contain the same variables.*/
-HDS::HDS(string process_id, int state, vector<string> alphabet, vector<string> fspData) : FspProcess(process_id, state, alphabet, fspData)
+HDS::HDS(string process_id, int state, vector<string> alphabet, vector<string> fspData) : FspProcess(process_id, state, alphabet, fspData, sync_server)
 {
 	this->process_id = process_id;
 	this->state = state;

@@ -10,9 +10,9 @@ bool RobotManager::init_system()
 	this->sync_server = new SynchronisationServer(this->hds);
 	for(int i = 0; i < size; i++)
 	{
-		FspProcess *process = new FspProcess(ltsa_data[i].process_id, init_state, this->get_alphabet(ltsa_data[i].fsp_data), ltsa_data[i].fsp_data);
+		FspProcess *process = new FspProcess(ltsa_data[i].process_id, init_state, this->get_alphabet(ltsa_data[i].fsp_data), ltsa_data[i].fsp_data, this->sync_server);
 		this->processes.push_back(process);
-		this->sync_server->processes.push_back(process);
+		this->sync_server->add_process(process);
 	}
 	//this->arm_manager = new ArmManager(this->sync_server);
 	//this->leg_manager = new LegManager(this->sync_server);

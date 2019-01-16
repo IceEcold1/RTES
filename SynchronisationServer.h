@@ -9,7 +9,6 @@
 #include <fstream>
 #include <vector>
 #include <unistd.h>
-#include "FspProcess.h"
 #include "HDS.h"
 
 using namespace std;
@@ -26,18 +25,12 @@ struct alphabet_process {
 	vector<FspProcess*> processes;
 };
 
-struct manager_command {
-	manager_id identifier;
-	string action;
-	bool resolved;
-	bool successful;
-	int return_value;
-};
+class FspProcess;
 
 class SynchronisationServer {
 private:
 	vector<alphabet_process> total_alphabet;
-	vector<manager_command> action_list;
+	vector<FspProcess*> processes;
 	HDS *hds;
 	bool working;
 
@@ -45,12 +38,12 @@ private:
 	bool action_exists_in_alphabet(string action);
 	bool process_vector_contains_process(vector<FspProcess*> process_vector, FspProcess *process);
 	bool action_is_valid(string action);
+	void execute_actions(string action);
+	void remove_process(string process_id);
 
 public:
 	SynchronisationServer(HDS *hds);
-	vector<FspProcess*> processes;
 	void run();
-	void give_action(manager_command input);
-	manager_command get_result(manager_command id);
+	void add_process(FspProcess *process);
 };
 #endif
