@@ -4,9 +4,9 @@
 #include <stdio.h>
 #include "SynchronisationServer.h"
 #include "HDS.h"
-#include "ArmManager.h"
-#include "LegManager.h"
-#include "SensorManager.h"
+//#include "ArmManager.h"
+//#include "LegManager.h"
+//#include "SensorManager.h"
 #include "FspProcess.h"
 #include "posix-regex-cpp/POSIXRegex.h"
 #include <boost/thread.hpp>
@@ -21,9 +21,9 @@ struct ltsa_export {
 
 class RobotManager {
 public:
-	ArmManager *arm_manager;
-	LegManager *leg_manager;
-	SensorManager *sensor_manager;
+	//ArmManager *arm_manager;
+	//LegManager *leg_manager;
+	//SensorManager *sensor_manager;
 
 	bool init_system();
 	bool start_system();
