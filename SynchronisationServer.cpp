@@ -23,9 +23,11 @@ void SynchronisationServer::run()
 		if(size.load(memory_order_relaxed) > 0)
 		{
 			vector<sens_list> sensitivity_list = this->processes[0]->get_sensitivity_list();
-			if(this->action_is_valid(sensitivity_list[0]))
+			if(this->action_is_valid(sensitivity_list[0].action))
 			{
-				this->execute_actions();
+				printf("Excecuting: %s\n", sensitivity_list[0].action.c_str());
+				this->execute_action(sensitivity_list[0].action);
+				usleep(1000000);
 			}
 			/*if(action_is_valid(this->action_list[0].action) && !this->action_list[0].resolved)
 			{
@@ -164,7 +166,7 @@ void SynchronisationServer::add_process(FspProcess *process)
 	this->processes.push_back(process);
 }
 
-void SynchronisationServer::execute_actions(string action)
+void SynchronisationServer::execute_action(string action)
 {
 	int total_alphabet_size = (int)this->total_alphabet.size();
 
@@ -172,10 +174,25 @@ void SynchronisationServer::execute_actions(string action)
 	{
 		if(strcmp(this->total_alphabet[i].action.c_str(), action.c_str()) == 0)
 		{
+			printf("SynchronisationServer::execute_action(), equal\n");
 			int process_size = (int)this->total_alphabet[i].processes.size();
-
+			printf("SynchronisationServer::execute_action(), process_size: %d\n", process_size);
 			for(int j = 0; j < process_size; j++)
+			{
 				this->total_alphabet[i].processes[j]->execute_action(action);
+				this->remove_process(this->total_alphabet[i].processes[j]->get_process_id());
+			}
 		}
+	}
+}
+
+void SynchronisationServer::remove_process(string process_id)
+{
+	int process_size = (int)this->processes.size();
+
+	for(int i = 0; i < process_size; i++)
+	{
+		if(strcmp(this->processes[i]->get_process_id().c_str(), process_id.c_str()) == 0)
+			this->processes.erase(this->processes.begin(), this->processes.begin() + i);
 	}
 }

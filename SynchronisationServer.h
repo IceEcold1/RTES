@@ -38,7 +38,7 @@ private:
 	bool action_exists_in_alphabet(string action);
 	bool process_vector_contains_process(vector<FspProcess*> process_vector, FspProcess *process);
 	bool action_is_valid(string action);
-	void execute_actions(string action);
+	void execute_action(string action);
 	void remove_process(string process_id);
 
 public:

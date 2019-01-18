@@ -39,6 +39,7 @@ int::FspProcess::get_cur_state()
 /*Based on the result return something to the sync server*/
 bool::FspProcess::next_action(string action)
 {
+	printf("FspProcess::next_action()\n");
 	/*Check if the element exists in the alphabet*/
 	if(find(this->alphabet.begin(), this->alphabet.end(), action) != this->alphabet.end())
 	{
