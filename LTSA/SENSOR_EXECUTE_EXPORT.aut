@@ -4,4 +4,8 @@ des(0,6,6)
 (2,gyro.get_data.z,3)
 (3,accelero.get_data.x,4)
 (4,accelero.get_data.y,5)
+<<<<<<< HEAD
 (5,accelero.get_data.z,0)
+=======
+(5,accelero.get_data.z,0)
+>>>>>>> 8868496bef1e781faf21e229bddae7cb9e818099

@@ -18,17 +18,26 @@ void SynchronisationServer::run()
 	this->collect_total_alphabet();
 	while(1)
 	{
+		bool exit = false;
 		hds_result = 0;
 		size.store((int)this->processes.size(), memory_order_relaxed);
-		if(size.load(memory_order_relaxed) > 0)
+		for(int i = 0; i < size.load(memory_order_relaxed); i++)
 		{
-			vector<sens_list> sensitivity_list = this->processes[0]->get_sensitivity_list();
-			if(this->action_is_valid(sensitivity_list[0].action))
+			if(exit) break;
+			vector<sens_list> sensitivity_list = this->processes[i]->get_sensitivity_list();
+			int sensitivity_list_size = (int)sensitivity_list.size();
+
+			for(int j = 0; j < sensitivity_list_size; j++)
 			{
-				printf("Excecuting: %s\n", sensitivity_list[0].action.c_str());
-				this->execute_action(sensitivity_list[0].action);
-				usleep(1000000);
+				if(this->action_is_valid(sensitivity_list[j].action))
+				{
+					this->execute_action(sensitivity_list[j].action);
+					usleep(1000000);
+					exit = true;
+					break;
+				}
 			}
+		}
 			/*if(action_is_valid(this->action_list[0].action) && !this->action_list[0].resolved)
 			{
 				hds_result = this->hds->execute_action(this->action_list[0].action);
@@ -62,7 +71,6 @@ void SynchronisationServer::run()
 				this->action_list[0].resolved = true;
 				this->action_list[0].successful = false;
 			}*/
-		}
 	}
 }
 
@@ -174,9 +182,7 @@ void SynchronisationServer::execute_action(string action)
 	{
 		if(strcmp(this->total_alphabet[i].action.c_str(), action.c_str()) == 0)
 		{
-			printf("SynchronisationServer::execute_action(), equal\n");
 			int process_size = (int)this->total_alphabet[i].processes.size();
-			printf("SynchronisationServer::execute_action(), process_size: %d\n", process_size);
 			for(int j = 0; j < process_size; j++)
 			{
 				this->total_alphabet[i].processes[j]->execute_action(action);

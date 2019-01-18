@@ -1,4 +1,5 @@
 #include "FspProcess.h"
+#include "SynchronisationServer.h"
 
 /*Always include the initial state and full alphabet.*/
 FspProcess::FspProcess(string process_id, int state, vector<string> alphabet, vector<string> fspData, SynchronisationServer *sync_server)
@@ -21,10 +22,12 @@ void::FspProcess::run()
 	this->is_started = true;
 	while(1)
 	{
+		usleep(200);
 		if(strcmp(this->fsp_action.c_str(), "NO_ACTION_SET") != 0)
 		{
 			this->next_action(this->fsp_action);
 			this->fsp_action = "NO_ACTION_SET";
+			this->sync_server->add_process(this);
 		}
 	}
 }
@@ -39,16 +42,16 @@ int::FspProcess::get_cur_state()
 /*Based on the result return something to the sync server*/
 bool::FspProcess::next_action(string action)
 {
-	printf("FspProcess::next_action()\n");
 	/*Check if the element exists in the alphabet*/
 	if(find(this->alphabet.begin(), this->alphabet.end(), action) != this->alphabet.end())
 	{
-		printf("FspProcess::(%s), action (%s) found in alphabet.\n", this->process_id.c_str(), action.c_str());
+		//printf("FspProcess::(%s), action (%s) found in alphabet.\n", this->process_id.c_str(), action.c_str());
 		/*Also check if this action is possible based on the current state, actions based on states are found in the sensitivity list*/
 		int next_state = this->get_next_state(action);
 		if(next_state != -1)
 		{
-			printf("FspProcess::(%s), action (%s) found in sensitivity list.\n", this->process_id.c_str(), action.c_str());
+			//printf("FspProcess::(%s), action (%s) found in sensitivity list.\n", this->process_id.c_str(), action.c_str());
+			printf("'%s': action: %s, old state: %d, new state: %d\n", action.c_str(), this->process_id.c_str(), this->state, next_state);
 			this->state = next_state; /*New state*/
 			this->sensitivity_list = this->compose_sensitivity_list(this->state, this->fspData);
 			return true;
