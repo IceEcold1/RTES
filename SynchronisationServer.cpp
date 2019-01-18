@@ -15,10 +15,12 @@ void SynchronisationServer::run()
 {
 	atomic<int> size;
 	int hds_result;
+	bool exit;
+
 	this->collect_total_alphabet();
 	while(1)
 	{
-		bool exit = false;
+		exit = false;
 		hds_result = 0;
 		size.store((int)this->processes.size(), memory_order_relaxed);
 		for(int i = 0; i < size.load(memory_order_relaxed); i++)
