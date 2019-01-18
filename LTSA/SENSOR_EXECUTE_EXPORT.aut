@@ -1,0 +1,7 @@
+des(0,6,5)
+(0,gyro.get_data.x,3)
+(0,accelero.get_data.x,1)
+(1,accelero.get_data.y,2)
+(2,accelero.get_data.z,0)
+(3,gyro.get_data.y,4)
+(4,gyro.get_data.z,0)
