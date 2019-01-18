@@ -39,6 +39,7 @@ void SynchronisationServer::run()
 					break;
 				}
 			}
+			//size.store((int)this->processes.size(), memory_order_relaxed);
 		}
 			/*if(action_is_valid(this->action_list[0].action) && !this->action_list[0].resolved)
 			{
