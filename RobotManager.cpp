@@ -8,13 +8,13 @@ bool RobotManager::init_system()
 	/*HDS constructor must create base class FspProcess first, since HDS has no sens list, send an empty vector*/
 	this->hds = new HDS(this->hds_data.process_id, init_state, this->get_alphabet(this->hds_data.fsp_data), this->hds_data.fsp_data);
 	this->sync_server = new SynchronisationServer(this->hds);
-	this->sync_server->add_process(this->hds);
 	for(int i = 0; i < size; i++)
 	{
 		FspProcess *process = new FspProcess(ltsa_data[i].process_id, init_state, this->get_alphabet(ltsa_data[i].fsp_data), ltsa_data[i].fsp_data, this->sync_server);
 		this->processes.push_back(process);
 		this->sync_server->add_process(process);
 	}
+	this->sync_server->add_process(this->hds);
 	return true;
 }
 

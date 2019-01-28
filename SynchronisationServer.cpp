@@ -34,6 +34,7 @@ void SynchronisationServer::run()
 			{
 				if(this->action_is_valid(sensitivity_list[j].action))
 				{
+					printf("Executing_action\n");
 					this->execute_action(sensitivity_list[j].action);
 					usleep(1000000);
 					exit = true;
@@ -182,6 +183,7 @@ void SynchronisationServer::execute_action(string action)
 		if(strcmp(this->total_alphabet[i].action.c_str(), action.c_str()) == 0)
 		{
 			int process_size = (int)this->total_alphabet[i].processes.size();
+			printf("execute_action: %s\n", action.c_str());
 			for(int j = 0; j < process_size; j++)
 				this->total_alphabet[i].processes[j]->execute_action(action);
 		}
