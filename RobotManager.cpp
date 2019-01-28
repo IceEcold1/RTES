@@ -6,8 +6,9 @@ bool RobotManager::init_system()
 	int size = (int)ltsa_data.size(), init_state = 0;
 	printf("RobotManager::Initializing systems\n");
 	/*HDS constructor must create base class FspProcess first, since HDS has no sens list, send an empty vector*/
-	this->hds = new HDS("HDS", init_state, vector<string>(), vector<string>());
+	this->hds = new HDS(this->hds_data.process_id, init_state, this->get_alphabet(this->hds_data.fsp_data), vector<string>());
 	this->sync_server = new SynchronisationServer(this->hds);
+	this->sync_server->add_process(this->hds);
 	for(int i = 0; i < size; i++)
 	{
 		FspProcess *process = new FspProcess(ltsa_data[i].process_id, init_state, this->get_alphabet(ltsa_data[i].fsp_data), ltsa_data[i].fsp_data, this->sync_server);
@@ -77,7 +78,6 @@ vector<struct ltsa_export> RobotManager::read_ltsa_exports()
 			string fileName(file->d_name);
 			if(fileName.find("HDS") == 0)
 			{
-				printf("%s\n", fileName.c_str());
 				while(getline(ltsa_export, data)) // Read trough the selected file line by line
 				{
 					this->hds_data.fsp_data.push_back(data);
