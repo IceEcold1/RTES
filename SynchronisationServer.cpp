@@ -35,9 +35,11 @@ void SynchronisationServer::run()
 				if(this->action_is_valid(sensitivity_list[j].action))
 				{
 					this->execute_action(sensitivity_list[j].action);
+					usleep(1000000);
 					exit = true;
 					break;
 				}
+				usleep(1000000);
 			}
 			size.store((int)this->processes.size(), memory_order_relaxed);
 		}
@@ -53,6 +55,8 @@ bool SynchronisationServer::action_is_valid(string action)
 	int size = (int)this->total_alphabet.size();
 	int process_size = 0;
 	int i;
+
+	printf("%s\n", action.c_str());
 
 	if(size == 0)
 		return false;
@@ -111,7 +115,7 @@ void SynchronisationServer::collect_total_alphabet()
 	}
 	for(int i = 0; i < total_alphabet_size; i++)
 	{
-		printf("action %d/%d: %s\n", i, total_alphabet_size, this->total_alphabet[i].action.c_str());
+		//printf("action %d/%d: %s\n", i, total_alphabet_size, this->total_alphabet[i].action.c_str());
 	}
 }
 

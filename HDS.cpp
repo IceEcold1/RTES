@@ -10,6 +10,7 @@ HDS::HDS(string process_id, int state, vector<string> alphabet, vector<string> f
 
 	/*Standard values for sync server linking.*/
 	this->hds_action = "NO_ACTION_SET";
+	this->sensitivity_list = this->compose_sensitivity_list(state, this->fspData);
 	this->transition_running.store(false, memory_order_relaxed);
 }
 
