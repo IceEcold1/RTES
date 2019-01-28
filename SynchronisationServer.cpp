@@ -23,8 +23,7 @@ void SynchronisationServer::run()
 		exit = false;
 		hds_result = 0;
 		size.store((int)this->processes.size(), memory_order_relaxed);
-
-		for(int i = 0; i < size.load(memory_order_relaxed); i++)
+		for(int i = 0; i < size.load(memory_order_relaxed) && !this->processes[i]->get_busy(); i++)
 		{
 			if(exit) break;
 			vector<sens_list> sensitivity_list = this->processes[i]->get_sensitivity_list();
@@ -66,9 +65,11 @@ bool SynchronisationServer::action_is_valid(string action)
 		else if(i == size - 1)
 			return false;
 	}
+	/*Loop door processen*/
 	for(int j = 0; j < process_size; j++)
 	{
-		if(!this->total_alphabet[i].processes[j]->sensitivity_list_contains_action(this->total_alphabet[i].action))
+		/*Loop door alle processen gekoppeld aan een enkele actie en check of deze processen deze actie in hun sens_list hebben*/
+		if(this->total_alphabet[i].processes[j]->get_busy() || !this->total_alphabet[i].processes[j]->sensitivity_list_contains_action(this->total_alphabet[i].action))
 			return false;
 	}
 	return true;

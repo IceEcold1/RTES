@@ -14,6 +14,7 @@ FspProcess::FspProcess(string process_id, int state, vector<string> alphabet, ve
 	/*standard values*/
 	this->fsp_action = "NO_ACTION_SET";
 	this->is_started = false;
+	this->is_busy.store(false,  memory_order_relaxed);
 }
 
 /*Check if the sync server sends a signal, based on that single do something.*/
@@ -32,7 +33,7 @@ void::FspProcess::run()
 	}
 }
 
-bool::FspProcess::is_busy()
+bool::FspProcess::get_busy()
 {
 	return this->is_busy.load(memory_order_relaxed);
 }

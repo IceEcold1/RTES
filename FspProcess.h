@@ -46,7 +46,7 @@ public:
 	bool get_started_bool();
 	vector<sens_list> get_sensitivity_list();
 	void execute_action(string action);
-	bool is_busy();
+	bool get_busy();
 };
 
 #endif
