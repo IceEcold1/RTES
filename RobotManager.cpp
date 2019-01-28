@@ -14,9 +14,6 @@ bool RobotManager::init_system()
 		this->processes.push_back(process);
 		this->sync_server->add_process(process);
 	}
-	//this->arm_manager = new ArmManager(this->sync_server);
-	//this->leg_manager = new LegManager(this->sync_server);
-	//this->sensor_manager = new SensorManager(this->sync_server);
 	return true;
 }
 
