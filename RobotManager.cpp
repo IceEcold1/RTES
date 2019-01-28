@@ -74,12 +74,25 @@ vector<struct ltsa_export> RobotManager::read_ltsa_exports()
 
 			sprintf((char*)path.c_str(), "LTSA/%s", file->d_name); // String-format the path of the LTSA export file
 			ltsa_export.open(path.c_str()); // Open the file using the generated path
-			while(getline(ltsa_export, data)) // Read trough the selected file line by line
+			string fileName(file->d_name);
+			if(fileName.find("HDS") == 0)
 			{
-				export_data.fsp_data.push_back(data);
+				printf("%s\n", fileName.c_str());
+				while(getline(ltsa_export, data)) // Read trough the selected file line by line
+				{
+					this->hds_data.fsp_data.push_back(data);
+				}
+				this->hds_data.process_id = file->d_name;
 			}
-			export_data.process_id = file->d_name;
-			ltsa_exports.push_back(export_data); // Add the LTSA data to the sting vector
+			else
+			{
+				while(getline(ltsa_export, data)) // Read trough the selected file line by line
+				{
+					export_data.fsp_data.push_back(data);
+				}
+				export_data.process_id = file->d_name;
+				ltsa_exports.push_back(export_data); // Add the LTSA data to the sting vector
+			}
 			ltsa_export.close(); // Close the file
 		}
 	}

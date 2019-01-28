@@ -4,9 +4,6 @@
 #include <stdio.h>
 #include "SynchronisationServer.h"
 #include "HDS.h"
-//#include "ArmManager.h"
-//#include "LegManager.h"
-//#include "SensorManager.h"
 #include "FspProcess.h"
 #include "posix-regex-cpp/POSIXRegex.h"
 #include <boost/thread.hpp>
@@ -31,6 +28,7 @@ private:
 	vector<FspProcess*> processes;
 	HDS *hds;
 	SynchronisationServer *sync_server;
+	ltsa_export hds_data;
 
 	vector<string> get_alphabet(vector<string> data);
 	vector<ltsa_export> read_ltsa_exports();
