@@ -147,7 +147,7 @@ bool SynchronisationServer::process_vector_contains_process(vector<FspProcess*> 
 	return false;
 }
 
-void SynchronisationServer::remove_process(string process_id)
+/*void SynchronisationServer::remove_process(string process_id)
 {
 	int processes_size = (int)this->processes.size();
 
@@ -156,7 +156,7 @@ void SynchronisationServer::remove_process(string process_id)
 		if(strcmp(this->processes[i]->get_process_id().c_str(), process_id.c_str()) == 0)
 			this->processes.erase(this->processes.begin() + i);
 	}
-}
+}*/
 
 void SynchronisationServer::add_process(FspProcess *process)
 {

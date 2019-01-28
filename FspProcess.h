@@ -24,6 +24,7 @@ class SynchronisationServer;
 class FspProcess {
 private:
 	string fsp_action;
+	atomic<bool> is_busy;
 protected:
 	string process_id;
 	int state;
@@ -45,6 +46,7 @@ public:
 	bool get_started_bool();
 	vector<sens_list> get_sensitivity_list();
 	void execute_action(string action);
+	bool is_busy();
 };
 
 #endif

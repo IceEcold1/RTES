@@ -25,12 +25,16 @@ void::FspProcess::run()
 		usleep(200);
 		if(strcmp(this->fsp_action.c_str(), "NO_ACTION_SET") != 0)
 		{
-			this->sync_server->remove_process(this->process_id);
 			this->next_action(this->fsp_action);
 			this->fsp_action = "NO_ACTION_SET";
-			this->sync_server->add_process(this);
+			this->is_busy.store(false,  memory_order_relaxed);
 		}
 	}
+}
+
+bool::FspProcess::is_busy()
+{
+	return this->is_busy.load(memory_order_relaxed);
 }
 
 /*Gets the current state which the actions will be based on.*/
@@ -152,6 +156,7 @@ bool FspProcess::get_started_bool()
 
 void FspProcess::execute_action(string action)
 {
+	this->is_busy.store(true,  memory_order_relaxed);
 	this->fsp_action = action;
 }
 

@@ -44,6 +44,6 @@ public:
 	SynchronisationServer(HDS *hds);
 	void run();
 	void add_process(FspProcess *process);
-	void remove_process(string process_id);
+	//void remove_process(string process_id);
 };
 #endif
