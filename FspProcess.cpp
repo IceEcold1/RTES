@@ -25,6 +25,7 @@ void::FspProcess::run()
 		usleep(200);
 		if(strcmp(this->fsp_action.c_str(), "NO_ACTION_SET") != 0)
 		{
+			this->sync_server->remove_process(this->process_id);
 			this->next_action(this->fsp_action);
 			this->fsp_action = "NO_ACTION_SET";
 			this->sync_server->add_process(this);

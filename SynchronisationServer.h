@@ -39,11 +39,11 @@ private:
 	bool process_vector_contains_process(vector<FspProcess*> process_vector, FspProcess *process);
 	bool action_is_valid(string action);
 	void execute_action(string action);
-	void remove_process(string process_id);
 
 public:
 	SynchronisationServer(HDS *hds);
 	void run();
 	void add_process(FspProcess *process);
+	void remove_process(string process_id);
 };
 #endif

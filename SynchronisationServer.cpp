@@ -23,6 +23,12 @@ void SynchronisationServer::run()
 		exit = false;
 		hds_result = 0;
 		size.store((int)this->processes.size(), memory_order_relaxed);
+
+		for(int i = 0; i < size.load(memory_order_relaxed); i++)
+		{
+			printf("Processes in list: %s\n", this->processes[i]->get_process_id().c_str());
+		}
+
 		for(int i = 0; i < size.load(memory_order_relaxed); i++)
 		{
 			if(exit) break;
@@ -41,6 +47,7 @@ void SynchronisationServer::run()
 			}
 			//size.store((int)this->processes.size(), memory_order_relaxed);
 		}
+		usleep(5000000);
 			/*if(action_is_valid(this->action_list[0].action) && !this->action_list[0].resolved)
 			{
 				hds_result = this->hds->execute_action(this->action_list[0].action);
@@ -172,6 +179,20 @@ bool SynchronisationServer::process_vector_contains_process(vector<FspProcess*> 
 	return false;
 }
 
+void SynchronisationServer::remove_process(string process_id)
+{
+	int processes_size = (int)this->processes.size();
+
+	for(int i = 0; i < processes_size; i++)
+	{
+		if(strcmp(this->processes[i]->get_process_id().c_str(), process_id.c_str()) == 0)
+		{
+			printf("Removing: %s\n", this->processes[i]->get_process_id().c_str());
+			this->processes.erase(this->processes.begin(), this->processes.begin() + i);
+		}
+	}
+}
+
 void SynchronisationServer::add_process(FspProcess *process)
 {
 	this->processes.push_back(process);
@@ -187,21 +208,7 @@ void SynchronisationServer::execute_action(string action)
 		{
 			int process_size = (int)this->total_alphabet[i].processes.size();
 			for(int j = 0; j < process_size; j++)
-			{
 				this->total_alphabet[i].processes[j]->execute_action(action);
-				this->remove_process(this->total_alphabet[i].processes[j]->get_process_id());
-			}
 		}
-	}
-}
-
-void SynchronisationServer::remove_process(string process_id)
-{
-	int process_size = (int)this->processes.size();
-
-	for(int i = 0; i < process_size; i++)
-	{
-		if(strcmp(this->processes[i]->get_process_id().c_str(), process_id.c_str()) == 0)
-			this->processes.erase(this->processes.begin(), this->processes.begin() + i);
 	}
 }
