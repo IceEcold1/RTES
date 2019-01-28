@@ -14,7 +14,7 @@ bool RobotManager::init_system()
 		this->processes.push_back(process);
 		this->sync_server->add_process(process);
 	}
-	this->sync_server->add_process(this->hds);
+	//this->sync_server->add_process(this->hds);
 	return true;
 }
 
