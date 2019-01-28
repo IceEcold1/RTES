@@ -14,7 +14,6 @@ using namespace std;
 /*Fill based on LTSA labels*/
 enum darwin_string_command{
 	action_not_found,
-	no_action_needed,
 	servo_rotate,
 	sensor_read_x,
 	sensor_read_y,
@@ -33,6 +32,7 @@ private:
 	int result;
 	string hds_action;
 	atomic<bool> transition_running;
+	string get_return_action(int sensor_value, vector<string> data);
 
 public:
 	/*Constructor, also gets the constructor from the super class*/

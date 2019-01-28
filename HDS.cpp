@@ -36,12 +36,13 @@ void::HDS::run()
 /*Do a next action, check if it's in the alphabet*/
 /*Based on the result send a command to the driver, return a value*/
 /*Return sensor value, -1 if errors are found or 0 if the servo has to be moved.*/
-int::HDS::next_action(string action)
+string HDS::next_action(string action)
 {
 	int address = 0;
 	int sensor_value = 0;
 	darwin_string_command label = this->str_to_enum(action);
 	string servo_sensor_id, action_value;
+	string return_action = "";
 
 	this->parse_servo_sensor_id(action, servo_sensor_id);
 	this->parse_action_value(action, action_value);
@@ -49,12 +50,7 @@ int::HDS::next_action(string action)
 	switch(label){
 		case action_not_found: 
 				printf("HDS::Action is not added to enum/not found.\n");
-			return -1;
-		break;
-		/*======================================================================*/
-		case no_action_needed: 
-				printf("HDS::No command is needed for this action.\n");
-			return 0;
+			return "NO_ACTION_NEEDED";
 		break;
 		/*======================================================================*/
 		case servo_rotate:
@@ -79,6 +75,7 @@ int::HDS::next_action(string action)
 			}
 			sensor_value = this->cm730_serial->action(this->cm730_serial->READ_PAIR, 200, address).message;
 			printf("HDS::Sensor return value is: (%d).\n", sensor_value);
+			return_action = this->get_return_action(sensor_value, servo_sensor_id, action_value);
 			return sensor_value;
 		break;
 		/*======================================================================*/
@@ -96,6 +93,7 @@ int::HDS::next_action(string action)
 			}
 			sensor_value = this->cm730_serial->action(this->cm730_serial->READ_PAIR, 200, address).message;
 			printf("HDS::Sensor return value is: (%d).\n", sensor_value);
+			return_action = this->get_return_action(sensor_value, servo_sensor_id, action_value);
 			return sensor_value;
 		break;
 		/*======================================================================*/
@@ -113,6 +111,7 @@ int::HDS::next_action(string action)
 			}
 			sensor_value = this->cm730_serial->action(this->cm730_serial->READ_PAIR, 200, address).message;
 			printf("HDS::Sensor return value is: (%d).\n", sensor_value);
+			return_action = this->get_return_action(sensor_value, servo_sensor_id, action_value);
 			return sensor_value;
 		break;
 		/*======================================================================*/
@@ -135,8 +134,6 @@ darwin_string_command HDS::str_to_enum(string action) {
 		return sensor_read_y;
 	else if (action.find("get_data.z") != string::npos)
 		return sensor_read_z;
-	else if (action.find("move_") != string::npos)
-		return no_action_needed;
 
     return action_not_found;
 }
@@ -182,4 +179,14 @@ int HDS::execute_action(string action)
 	this->hds_action = "NO_ACTION_SET";
 	printf("HDS::Action result: %d\n", this->result);
 	return this->result;
+}
+
+string HDS::get_return_action(int sensor_value, string sensor_id, string axis)
+{
+	string return_action = ".return_data.";
+	return_action.insert(0, sensor_id);
+	axis.append(".");
+	return_action.append(axis);
+	return_action = return_action + boost::lexical_cast<std::string>(sensor_value);
+	printf("Return value is: %s", return_action.c_str());
 }
