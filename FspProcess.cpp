@@ -138,7 +138,7 @@ bool FspProcess::alphabet_contains_action(string action)
 bool FspProcess::sensitivity_list_contains_action(string action)
 {
 	int size = (int)this->sensitivity_list.size();
-
+	printf("Action found in sens list, executing\n");
 	for(int i = 0; i < size; i++)
 	{
 		if(strcmp(action.c_str(), this->sensitivity_list[i].action.c_str()) == 0)

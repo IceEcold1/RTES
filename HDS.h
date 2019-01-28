@@ -32,7 +32,7 @@ private:
 	int result;
 	string hds_action;
 	atomic<bool> transition_running;
-	string get_return_action(int sensor_value, vector<string> data);
+	string get_return_action(int sensor_value, string sensor_id, string axis);
 
 public:
 	/*Constructor, also gets the constructor from the super class*/

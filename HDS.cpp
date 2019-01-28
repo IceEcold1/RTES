@@ -36,7 +36,7 @@ void::HDS::run()
 /*Do a next action, check if it's in the alphabet*/
 /*Based on the result send a command to the driver, return a value*/
 /*Return sensor value, -1 if errors are found or 0 if the servo has to be moved.*/
-string HDS::next_action(string action)
+int HDS::next_action(string action)
 {
 	int address = 0;
 	int sensor_value = 0;
@@ -50,7 +50,7 @@ string HDS::next_action(string action)
 	switch(label){
 		case action_not_found: 
 				printf("HDS::Action is not added to enum/not found.\n");
-			return "NO_ACTION_NEEDED";
+			return -1;
 		break;
 		/*======================================================================*/
 		case servo_rotate:
@@ -189,4 +189,5 @@ string HDS::get_return_action(int sensor_value, string sensor_id, string axis)
 	return_action.append(axis);
 	return_action = return_action + boost::lexical_cast<std::string>(sensor_value);
 	printf("Return value is: %s", return_action.c_str());
+	return return_action;
 }

@@ -59,16 +59,24 @@ bool SynchronisationServer::action_is_valid(string action)
 	printf("%s\n", action.c_str());
 
 	if(size == 0)
+	{
+		printf("Oh feck, no size\n");
 		return false;
+	}
 	for(i = 0; i < size; i++)
 	{
+		printf("Stringcomparing: %s with %s\n", this->total_alphabet[i].action.c_str(), action.c_str());
+		usleep(100000);
 		if(strcmp(this->total_alphabet[i].action.c_str(), action.c_str()) == 0)
 		{
 			process_size = (int)this->total_alphabet[i].processes.size();
 			break;
 		}
 		else if(i == size - 1)
+		{
+			printf("Oh feck me dead, end of list found.\n");
 			return false;
+		}
 	}
 	for(int j = 0; j < process_size; j++)
 	{
