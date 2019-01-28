@@ -29,6 +29,7 @@ void::FspProcess::run()
 			this->next_action(this->fsp_action);
 			this->fsp_action = "NO_ACTION_SET";
 			this->sync_server->add_process(this);
+			printf("End of while loop\n");
 		}
 	}
 }

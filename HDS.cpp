@@ -166,11 +166,13 @@ void HDS::parse_servo_sensor_id(string action, string &servo_sensor_id)
 /*Asynchronous action from sync server.*/
 int HDS::execute_action(string action)
 {
+	printf("HDS::execute_action()\n");
 	this->hds_action = action;
 	this->transition_running.store(true, memory_order_relaxed);
 
 	while(this->transition_running.load(memory_order_relaxed))
 	{
+		printf("HDS::execute_action()\n");
 		usleep(200);/*Give time to load data*/
 	}
 	this->hds_action = "NO_ACTION_SET";
