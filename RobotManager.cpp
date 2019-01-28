@@ -49,7 +49,9 @@ vector<string> RobotManager::get_alphabet(vector<string> data)
 	{
 		m = re.match(data[i]);
 		if(find(res.begin(), res.end(), m.group(1)) == res.end())
+		{
 			res.push_back(m.group(1));
+		}
 	}
 	return res;
 }

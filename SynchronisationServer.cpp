@@ -34,13 +34,10 @@ void SynchronisationServer::run()
 			{
 				if(this->action_is_valid(sensitivity_list[j].action))
 				{
-					printf("Executing_action\n");
 					this->execute_action(sensitivity_list[j].action);
-					usleep(1000000);
 					exit = true;
 					break;
 				}
-				usleep(1000000);
 			}
 			size.store((int)this->processes.size(), memory_order_relaxed);
 		}
@@ -57,27 +54,17 @@ bool SynchronisationServer::action_is_valid(string action)
 	int process_size = 0;
 	int i;
 
-	printf("%s\n", action.c_str());
-
 	if(size == 0)
-	{
-		printf("Oh feck, no size\n");
 		return false;
-	}
 	for(i = 0; i < size; i++)
 	{
-		printf("Stringcomparing: %s with %s\n", this->total_alphabet[i].action.c_str(), action.c_str());
-		usleep(100000);
 		if(strcmp(this->total_alphabet[i].action.c_str(), action.c_str()) == 0)
 		{
 			process_size = (int)this->total_alphabet[i].processes.size();
 			break;
 		}
 		else if(i == size - 1)
-		{
-			printf("Oh feck me dead, end of list found.\n");
 			return false;
-		}
 	}
 	for(int j = 0; j < process_size; j++)
 	{
@@ -93,30 +80,30 @@ bool SynchronisationServer::action_is_valid(string action)
 */
 void SynchronisationServer::collect_total_alphabet()
 {
-	int processes_size = (int)this->processes.size();
+	int processes_size = (int)this->processes.size(); // size of vector 'processes'
 
-	for(int i = 0; i < processes_size; i++)
+	for(int i = 0; i < processes_size; i++)	// loop trough each process
 	{
-		vector<string> alphabet = this->processes[i]->get_alphabet();
-		int alphabet_size = (int)alphabet.size();
+		vector<string> alphabet = this->processes[i]->get_alphabet(); // get alphabet of the current process
+		int alphabet_size = (int)alphabet.size(); // get size of the alphabet of the current process
 
-		for(int j = 0; j < alphabet_size; j++)
+		for(int j = 0; j < alphabet_size; j++) // loop trough all actions
 		{
-			struct alphabet_process alphabet_item;
+			struct alphabet_process alphabet_item; // define new struct for each action
 
-			if(!this->action_exists_in_alphabet(alphabet[j]))
+			if(!this->action_exists_in_alphabet(alphabet[j])) // check if action exists in the current alphabet
 			{
-				alphabet_item.action = alphabet[j];
-				alphabet_item.processes.push_back(this->processes[i]);
+				alphabet_item.action = alphabet[j]; // set the action in the struct
+				alphabet_item.processes.push_back(this->processes[i]); // push the current process to the process vector of the struct
+				this->total_alphabet.push_back(alphabet_item); // push the struct to the vector (total_alphabet)
 			}
-			this->total_alphabet.push_back(alphabet_item);
 		}
 	}
 
-	int total_alphabet_size = (int)this->total_alphabet.size();
-	for(int i = 0; i < total_alphabet_size; i++)
+	int total_alphabet_size = (int)this->total_alphabet.size(); // get the size of total_alphabet
+	for(int i = 0; i < total_alphabet_size; i++) // loop trough each item of total_alphabet
 	{
-		for(int j = 0; j < processes_size; j++)
+		for(int j = 0; j < processes_size; j++) // loop trhough each process
 		{
 			if(this->processes[j]->alphabet_contains_action(this->total_alphabet[i].action) && !this->process_vector_contains_process(this->total_alphabet[i].processes, this->processes[j]))
 				this->total_alphabet[i].processes.push_back(this->processes[j]);
@@ -124,7 +111,10 @@ void SynchronisationServer::collect_total_alphabet()
 	}
 	for(int i = 0; i < total_alphabet_size; i++)
 	{
-		//printf("action %d/%d: %s\n", i, total_alphabet_size, this->total_alphabet[i].action.c_str());
+		if(this->total_alphabet[i].action.find("HDS") == 0)
+		{
+			printf("action %d/%d: %s\n", i, total_alphabet_size, this->total_alphabet[i].action.c_str());
+		}
 	}
 }
 
@@ -183,7 +173,6 @@ void SynchronisationServer::execute_action(string action)
 		if(strcmp(this->total_alphabet[i].action.c_str(), action.c_str()) == 0)
 		{
 			int process_size = (int)this->total_alphabet[i].processes.size();
-			printf("execute_action: %s\n", action.c_str());
 			for(int j = 0; j < process_size; j++)
 				this->total_alphabet[i].processes[j]->execute_action(action);
 		}
