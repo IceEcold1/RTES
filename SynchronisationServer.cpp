@@ -15,10 +15,13 @@ void SynchronisationServer::run()
 {
 	int size = (int)this->processes.size();
 	int hds_result;
+<<<<<<< HEAD
 	//bool exit;
+=======
+>>>>>>> 8f5ece745f8537356346040adfd633e07d98aefc
 
 	this->collect_total_alphabet();
-	for(int i = 0; i < (int)this->total_alphabet.size(); i++)
+	/*for(int i = 0; i < (int)this->total_alphabet.size(); i++)
 	{
 		printf("Action: %s: ", this->total_alphabet[i].action.c_str());
 		for(int j = 0; j < (int)this->total_alphabet[i].processes.size(); j++)
@@ -26,7 +29,7 @@ void SynchronisationServer::run()
 			printf("%s, ", this->total_alphabet[i].processes[j]->get_process_id().c_str());
 		}
 		printf("\n");
-	}
+	}*/
 	while(1)
 	{
 		hds_result = 0;
@@ -37,10 +40,16 @@ void SynchronisationServer::run()
 
 			for(int j = 0; j < sensitivity_list_size; j++)
 			{
+				printf("Going through sens list of process: %s\n", this->processes[i]->get_process_id().c_str());
+				usleep(300000);
 				if(this->action_is_valid(sensitivity_list[j].action))
 				{
+					printf("Action: %s is valid\n", sensitivity_list[j].action.c_str());
 					this->execute_action(sensitivity_list[j].action);
+<<<<<<< HEAD
 					//usleep(5000000);
+=======
+>>>>>>> 8f5ece745f8537356346040adfd633e07d98aefc
 				}
 			}
 		}
@@ -181,10 +190,16 @@ void SynchronisationServer::execute_action(string action)
 			int process_size = (int)this->total_alphabet[i].processes.size();
 			for(int j = 0; j < process_size; j++)
 			{
+<<<<<<< HEAD
 				printf("SynchronisationServer::execute_action(): action: %s, process: %s\n", this->total_alphabet[i].action.c_str(), this->total_alphabet[i].processes[j]->get_process_id().c_str());
 				this->total_alphabet[i].processes[j]->execute_action(action);
 			}
 			this->hds->execute_action(action);
+=======
+				printf("Sync_server::executing action: %s\n", this->total_alphabet[i].processes[j]->get_process_id().c_str());
+				this->total_alphabet[i].processes[j]->execute_action(action);
+			}
+>>>>>>> 8f5ece745f8537356346040adfd633e07d98aefc
 		}
 	}
 }

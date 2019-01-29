@@ -12,6 +12,7 @@ HDS::HDS(string process_id, int state, vector<string> alphabet, vector<string> f
 	this->hds_action = "NO_ACTION_SET";
 	this->sensitivity_list = this->compose_sensitivity_list(state, this->fspData);
 	this->is_busy.store(false, memory_order_relaxed);
+	printf("HDS:: construct: %s\n", process_id.c_str());
 }
 
 void::HDS::run()
@@ -170,7 +171,7 @@ int HDS::execute_action(string action)
 	printf("HDS::execute_action()\n");
 	this->hds_action = action;
 	this->is_busy.store(true, memory_order_relaxed);
-
+	printf("Setting HDS Action\n");
 	while(this->is_busy.load(memory_order_relaxed))
 	{
 		usleep(100);/*Give time to load data*/
