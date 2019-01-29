@@ -11,6 +11,7 @@ HDS::HDS(string process_id, int state, vector<string> alphabet, vector<string> f
 	/*Standard values for sync server linking.*/
 	this->hds_action = "NO_ACTION_SET";
 	this->sensitivity_list = this->compose_sensitivity_list(state, this->fspData);
+	this->backup_sensitivity_list = this->sensitivity_list;
 	this->is_busy.store(false, memory_order_relaxed);
 }
 
@@ -129,7 +130,7 @@ int HDS::next_action(string action)
 			if(strcmp(action_value.c_str(), "NO_MATCHES_FOUND") == 0)
 				return -1;
 
-			this->compose_sensitivity_list(this->state, this->fspData);
+			this->sensitivity_list = this->backup_sensitivity_list;
 
 			return 0;
 

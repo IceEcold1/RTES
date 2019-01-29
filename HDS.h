@@ -32,6 +32,7 @@ private:
 	int next_action(string action);
 	int result;
 	string hds_action;
+	vector<sens_list> backup_sensitivity_list;
 	void set_sensitivity_list_returnval(int sensor_value, string sensor_id, string axis);
 
 public:
