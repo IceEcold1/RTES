@@ -18,6 +18,15 @@ void SynchronisationServer::run()
 	bool exit;
 
 	this->collect_total_alphabet();
+	for(int i = 0; i < (int)this->total_alphabet.size(); i++)
+	{
+		printf("Action: %s: ", this->total_alphabet[i].action.c_str());
+		for(int j = 0; j < (int)this->total_alphabet[i].processes.size(); j++)
+		{
+			printf("%s, ", this->total_alphabet[i].processes[j]->get_process_id().c_str());
+		}
+		printf("\n");
+	}
 	while(1)
 	{
 		exit = false;

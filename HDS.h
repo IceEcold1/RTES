@@ -31,7 +31,6 @@ private:
 	int next_action(string action);
 	int result;
 	string hds_action;
-	atomic<bool> transition_running;
 	string get_return_action(int sensor_value, string sensor_id, string axis);
 
 public:

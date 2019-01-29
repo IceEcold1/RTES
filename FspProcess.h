@@ -24,10 +24,10 @@ class SynchronisationServer;
 class FspProcess {
 private:
 	string fsp_action;
-	atomic<bool> is_busy;
 protected:
 	string process_id;
 	int state;
+	atomic<bool> is_busy;
 	vector<string> alphabet, fspData;
 	vector<sens_list> sensitivity_list;
 	SynchronisationServer *sync_server;

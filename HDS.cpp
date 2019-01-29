@@ -11,7 +11,7 @@ HDS::HDS(string process_id, int state, vector<string> alphabet, vector<string> f
 	/*Standard values for sync server linking.*/
 	this->hds_action = "NO_ACTION_SET";
 	this->sensitivity_list = this->compose_sensitivity_list(state, this->fspData);
-	this->transition_running.store(false, memory_order_relaxed);
+	this->is_busy.store(false, memory_order_relaxed);
 }
 
 void::HDS::run()
@@ -28,7 +28,7 @@ void::HDS::run()
 		{
 			printf("HDS::Action found (%s)\n", this->hds_action.c_str());
 			this->result = this->next_action(this->hds_action);
-			this->transition_running.store(false, memory_order_relaxed);
+			this->is_busy.store(false, memory_order_relaxed);
 		}
 	}
 }
@@ -167,14 +167,12 @@ void HDS::parse_servo_sensor_id(string action, string &servo_sensor_id)
 /*Asynchronous action from sync server.*/
 int HDS::execute_action(string action)
 {
-	printf("HDS::execute_action()\n");
 	this->hds_action = action;
-	this->transition_running.store(true, memory_order_relaxed);
+	this->is_busy.store(true, memory_order_relaxed);
 
-	while(this->transition_running.load(memory_order_relaxed))
+	while(this->is_busy.load(memory_order_relaxed))
 	{
-		printf("HDS::execute_action()\n");
-		usleep(200);/*Give time to load data*/
+		usleep(100);/*Give time to load data*/
 	}
 	this->hds_action = "NO_ACTION_SET";
 	printf("HDS::Action result: %d\n", this->result);
