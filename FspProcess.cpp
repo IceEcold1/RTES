@@ -24,7 +24,7 @@ void::FspProcess::run()
 	while(1)
 	{
 		usleep(200);
-		if(strcmp(this->fsp_action.c_str(), "NO_ACTION_SET") != 0)
+		if(strcmp(this->fsp_action.c_str(), "NO_ACTION_SET") != 0 && this->is_busy.load(memory_order_relaxed))
 		{
 			this->next_action(this->fsp_action);
 			this->fsp_action = "NO_ACTION_SET";
@@ -157,7 +157,6 @@ bool FspProcess::get_started_bool()
 
 void FspProcess::execute_action(string action)
 {
-	printf("FspProcess::%s is executing action: %s\n", this->process_id.c_str(), action.c_str());
 	this->is_busy.store(true,  memory_order_relaxed);
 	this->fsp_action = action;
 }

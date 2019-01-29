@@ -14,25 +14,10 @@ SynchronisationServer::SynchronisationServer(HDS *hds)
 void SynchronisationServer::run()
 {
 	int size = (int)this->processes.size();
-	int hds_result;
-<<<<<<< HEAD
-	//bool exit;
-=======
->>>>>>> 8f5ece745f8537356346040adfd633e07d98aefc
 
 	this->collect_total_alphabet();
-	/*for(int i = 0; i < (int)this->total_alphabet.size(); i++)
-	{
-		printf("Action: %s: ", this->total_alphabet[i].action.c_str());
-		for(int j = 0; j < (int)this->total_alphabet[i].processes.size(); j++)
-		{
-			printf("%s, ", this->total_alphabet[i].processes[j]->get_process_id().c_str());
-		}
-		printf("\n");
-	}*/
 	while(1)
 	{
-		hds_result = 0;
 		for(int i = 0; i < size && !this->processes[i]->get_busy(); i++)
 		{
 			vector<sens_list> sensitivity_list = this->processes[i]->get_sensitivity_list();
@@ -40,16 +25,9 @@ void SynchronisationServer::run()
 
 			for(int j = 0; j < sensitivity_list_size; j++)
 			{
-				printf("Going through sens list of process: %s\n", this->processes[i]->get_process_id().c_str());
-				usleep(300000);
 				if(this->action_is_valid(sensitivity_list[j].action))
 				{
-					printf("Action: %s is valid\n", sensitivity_list[j].action.c_str());
 					this->execute_action(sensitivity_list[j].action);
-<<<<<<< HEAD
-					//usleep(5000000);
-=======
->>>>>>> 8f5ece745f8537356346040adfd633e07d98aefc
 				}
 			}
 		}
@@ -124,13 +102,6 @@ void SynchronisationServer::collect_total_alphabet()
 				this->total_alphabet[i].processes.push_back(this->processes[j]);
 		}
 	}
-	for(int i = 0; i < total_alphabet_size; i++)
-	{
-		if(this->total_alphabet[i].action.find("HDS") == 0)
-		{
-			printf("action %d/%d: %s\n", i, total_alphabet_size, this->total_alphabet[i].action.c_str());
-		}
-	}
 }
 
 /*
@@ -190,16 +161,13 @@ void SynchronisationServer::execute_action(string action)
 			int process_size = (int)this->total_alphabet[i].processes.size();
 			for(int j = 0; j < process_size; j++)
 			{
-<<<<<<< HEAD
-				printf("SynchronisationServer::execute_action(): action: %s, process: %s\n", this->total_alphabet[i].action.c_str(), this->total_alphabet[i].processes[j]->get_process_id().c_str());
 				this->total_alphabet[i].processes[j]->execute_action(action);
 			}
-			this->hds->execute_action(action);
-=======
-				printf("Sync_server::executing action: %s\n", this->total_alphabet[i].processes[j]->get_process_id().c_str());
-				this->total_alphabet[i].processes[j]->execute_action(action);
+			/*check for hardware action*/
+			if(this->hds->alphabet_contains_action(action))
+			{
+				this->hds->execute_action(action);
 			}
->>>>>>> 8f5ece745f8537356346040adfd633e07d98aefc
-		}
+		}	
 	}
 }

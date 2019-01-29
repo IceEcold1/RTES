@@ -17,7 +17,8 @@ enum darwin_string_command{
 	servo_rotate,
 	sensor_read_x,
 	sensor_read_y,
-	sensor_read_z
+	sensor_read_z,
+	return_data
 };
 
 /*HDS extends FspProcess*/
@@ -31,7 +32,7 @@ private:
 	int next_action(string action);
 	int result;
 	string hds_action;
-	string get_return_action(int sensor_value, string sensor_id, string axis);
+	void set_sensitivity_list_returnval(int sensor_value, string sensor_id, string axis);
 
 public:
 	/*Constructor, also gets the constructor from the super class*/
