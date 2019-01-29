@@ -67,7 +67,7 @@ CM730Serial::Response CM730Serial::action(Actions action, int id, int address, i
 
 			response = this->Read(instruction_packet, 8);
 
-			printf("Response: %d\n", response.message);
+			//printf("Response: %d\n", response.message);
 			break;
 		case WRITE:
 			instruction_packet[LENGTH]			= (unsigned char)SINGLE_ARGUMENT_LENGTH;
@@ -77,7 +77,7 @@ CM730Serial::Response CM730Serial::action(Actions action, int id, int address, i
 
 			response.length 					= write(this->USB, instruction_packet, 8); 
 
-			printf("Geschreven: %d\n", response.length);
+			//printf("Geschreven: %d\n", response.length);
 
 			break;
 		case WRITE_PAIR:
@@ -109,13 +109,13 @@ CM730Serial::Response CM730Serial::Read(unsigned char* instruction_packet, int p
 
 	int result = write(this->USB, instruction_packet, packet_length);
 
-	printf("Bits: %d\n", result);
+	//printf("Bits: %d\n", result);
 
 	//usleep(100000);
 
 	result = read(this->USB, status_packet, 8);
 
-	printf("Ontvangen: %d\n", result);
+	//printf("Ontvangen: %d\n", result);
 
 	if(instruction_packet[DATA_LENGTH] == 2) {
 		lowByte 	= (int)status_packet[ADDRESS];
