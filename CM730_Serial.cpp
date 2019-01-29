@@ -111,7 +111,7 @@ CM730Serial::Response CM730Serial::Read(unsigned char* instruction_packet, int p
 
 	printf("Bits: %d\n", result);
 
-	usleep(100000);
+	//usleep(100000);
 
 	result = read(this->USB, status_packet, 8);
 
