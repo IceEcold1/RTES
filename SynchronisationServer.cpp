@@ -13,9 +13,9 @@ SynchronisationServer::SynchronisationServer(HDS *hds)
 */
 void SynchronisationServer::run()
 {
-	atomic<int> size;
+	int size = (int)this->processes.size();
 	int hds_result;
-	bool exit;
+	//bool exit;
 
 	this->collect_total_alphabet();
 	for(int i = 0; i < (int)this->total_alphabet.size(); i++)
@@ -29,12 +29,9 @@ void SynchronisationServer::run()
 	}
 	while(1)
 	{
-		exit = false;
 		hds_result = 0;
-		size.store((int)this->processes.size(), memory_order_relaxed);
-		for(int i = 0; i < size.load(memory_order_relaxed) && !this->processes[i]->get_busy(); i++)
+		for(int i = 0; i < size && !this->processes[i]->get_busy(); i++)
 		{
-			if(exit) break;
 			vector<sens_list> sensitivity_list = this->processes[i]->get_sensitivity_list();
 			int sensitivity_list_size = (int)sensitivity_list.size();
 
@@ -43,13 +40,10 @@ void SynchronisationServer::run()
 				if(this->action_is_valid(sensitivity_list[j].action))
 				{
 					this->execute_action(sensitivity_list[j].action);
-					exit = true;
-					break;
+					//usleep(5000000);
 				}
 			}
-			size.store((int)this->processes.size(), memory_order_relaxed);
 		}
-		//usleep(500000);
 	}
 }
 
@@ -81,6 +75,8 @@ bool SynchronisationServer::action_is_valid(string action)
 		if(this->total_alphabet[i].processes[j]->get_busy() || !this->total_alphabet[i].processes[j]->sensitivity_list_contains_action(this->total_alphabet[i].action))
 			return false;
 	}
+	if(this->hds->alphabet_contains_action(action) && (!this->hds->sensitivity_list_contains_action(action) && this->hds->get_busy()))
+		return false;
 	return true;
 }
 
@@ -184,7 +180,11 @@ void SynchronisationServer::execute_action(string action)
 		{
 			int process_size = (int)this->total_alphabet[i].processes.size();
 			for(int j = 0; j < process_size; j++)
+			{
+				printf("SynchronisationServer::execute_action(): action: %s, process: %s\n", this->total_alphabet[i].action.c_str(), this->total_alphabet[i].processes[j]->get_process_id().c_str());
 				this->total_alphabet[i].processes[j]->execute_action(action);
+			}
+			this->hds->execute_action(action);
 		}
 	}
 }
