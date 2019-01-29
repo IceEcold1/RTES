@@ -157,6 +157,7 @@ bool FspProcess::get_started_bool()
 
 void FspProcess::execute_action(string action)
 {
+	printf("FspProcess::%s is executing action: %s\n", this->process_id.c_str(), action.c_str());
 	this->is_busy.store(true,  memory_order_relaxed);
 	this->fsp_action = action;
 }
