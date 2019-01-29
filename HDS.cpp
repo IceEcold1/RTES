@@ -44,6 +44,9 @@ int HDS::next_action(string action)
 	string servo_sensor_id, action_value;
 	string return_action = "";
 
+	int i = 0, dest_value = 0, response = 0, servo_id = 0;
+
+
 	this->parse_servo_sensor_id(action, servo_sensor_id);
 	this->parse_action_value(action, action_value);
 
@@ -58,7 +61,19 @@ int HDS::next_action(string action)
 				return -1;
 
 			printf("HDS::Servo (%s) rotates to position %s.\n", servo_sensor_id.c_str(), action_value.c_str());
-			this->cm730_serial->action(this->cm730_serial->WRITE_PAIR, stoi(servo_sensor_id.erase(0, 1).c_str()), 30, stoi(action_value.c_str())).length;
+			dest_value = stoi(action_value.c_str());
+			servo_id = stoi(servo_sensor_id.erase(0, 1).c_str());
+			this->cm730_serial->action(this->cm730_serial->WRITE_PAIR, servo_id, 30, dest_value);
+	
+			for(i = 0; i < 1000; i++) {
+				response = this->cm730_serial->action(this->cm730_serial->READ_PAIR, servo_id, 36).message;
+
+				if(response > (dest_value - 50) && response < (dest_value + 50)) break;
+
+				usleep(1000);
+			};
+
+			if(i == 1000) printf("POSITION NOT REACHED");
 			return 0;
 		break;
 		/*======================================================================*/
